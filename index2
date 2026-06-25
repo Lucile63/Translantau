@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TransLantau50 — Préparation V4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --bg:#0A0C0F;
+      --panel:#11151B;
+      --panel-2:#151A22;
+      --line:#252B35;
+      --text:#F4F7FA;
+      --muted:#8A8F9A;
+      --orange:#E8622A;
+      --orange-bright:#FF762F;
+      --green:#1DB37A;
+      --blue:#2E8FE0;
+      --red:#E83A2A;
+      --light-gray:#D2D7E0;
+      --radius:4px;
+      --shadow:0 18px 50px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 12% 5%, rgba(232,98,42,.16), transparent 32%),
+        radial-gradient(circle at 90% 15%, rgba(46,143,224,.14), transparent 28%),
+        linear-gradient(180deg,#0A0C0F 0%,#090B0E 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    a{color:inherit}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .side-progress{
+      position:fixed;
+      z-index:30;
+      left:0;
+      top:0;
+      bottom:0;
+      width:7px;
+      background:#050608;
+      border-right:1px solid rgba(255,255,255,.06);
+    }
+    .side-progress-fill{
+      position:absolute;
+      left:0;
+      bottom:0;
+      width:100%;
+      height:0%;
+      background:linear-gradient(0deg,var(--orange-bright),var(--blue));
+      box-shadow:0 0 18px rgba(232,98,42,.75);
+      transition:height 900ms cubic-bezier(.2,.8,.2,1), background 500ms ease;
+    }
+    .side-progress-fill.race{animation:pulseGlow 1.4s ease-in-out infinite}
+    @keyframes pulseGlow{0%,100%{box-shadow:0 0 12px rgba(255,118,47,.45)}50%{box-shadow:0 0 30px rgba(255,118,47,1)}}
+    .page{width:min(1500px,calc(100% - 34px));margin:0 auto;padding:26px 0 42px 7px}
+    .hero{
+      min-height:620px;
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:22px;
+      align-items:stretch;
+      padding-top:12px;
+    }
+    .hero-main,.hero-side,.card,.chart-card,.week-card,.drawer,.rules,.quote-panel,.footer-card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(21,26,34,.94),rgba(12,15,20,.94));
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .hero-main{padding:30px;position:relative;overflow:hidden}
+    .hero-main:before{
+      content:"";position:absolute;inset:-40% -25% auto auto;width:520px;height:520px;
+      background:radial-gradient(circle,rgba(232,98,42,.22),transparent 70%);transform:rotate(20deg)
+    }
+    .eyebrow{color:var(--orange);font-weight:800;letter-spacing:.18em;text-transform:uppercase;font-size:12px;margin-bottom:18px;position:relative;z-index:1}
+    h1{
+      font-family:'Bebas Neue',Impact,sans-serif;
+      margin:0;
+      font-size:clamp(74px,10vw,168px);
+      line-height:.86;
+      letter-spacing:.015em;
+      position:relative;z-index:1;
+      text-shadow:0 10px 30px rgba(0,0,0,.42);
+    }
+    .subtitle{font-size:clamp(18px,2vw,28px);font-weight:700;color:var(--light-gray);margin:16px 0 28px;position:relative;z-index:1}
+    .countdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:24px;position:relative;z-index:1}
+    .count-box{background:#0B0E13;border:1px solid #2A303A;border-radius:var(--radius);padding:16px 10px;text-align:center;overflow:hidden;position:relative}
+    .count-box:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--orange);animation:countLine 2.4s ease-in-out infinite}
+    @keyframes countLine{0%,100%{transform:scaleX(.08);opacity:.4}50%{transform:scaleX(1);opacity:1}}
+    .count-value{font-family:'Bebas Neue';font-size:clamp(42px,6vw,76px);line-height:1;color:#fff}
+    .count-label{color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:11px}
+    .mantra-hero{margin-top:26px;min-height:70px;border-left:3px solid var(--orange);padding:14px 0 12px 18px;font-family:'Bebas Neue';font-size:clamp(28px,4vw,52px);line-height:.95;color:#fff;opacity:1;transition:opacity 600ms ease;position:relative;z-index:1}
+    .mantra-hero.fade{opacity:0}
+    .hero-side{padding:22px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+    .mini-races{display:grid;gap:10px}
+    .mini-race{display:flex;justify-content:space-between;gap:14px;align-items:center;background:#0B0E13;border:1px solid #2A303A;border-radius:var(--radius);padding:14px}
+    .mini-race.hidden{display:none}
+    .mini-race .name{font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+    .mini-race .days{font-family:'Bebas Neue';font-size:34px;color:var(--orange-bright)}
+    .hero-note{margin-top:auto;color:var(--muted);font-size:13px;line-height:1.6;border-top:1px solid var(--line);padding-top:16px}
+    .section{margin-top:30px}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:0 0 14px}
+    .section-title{font-family:'Bebas Neue';font-size:42px;letter-spacing:.035em;margin:0;line-height:.95}
+    .section-sub{color:var(--muted);font-size:13px;margin:4px 0 0;max-width:800px}
+    .dashboard-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .card{padding:16px;min-height:112px;position:relative;overflow:hidden}
+    .span-2{grid-column:span 2}.span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
+    .kpi-label{color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+    .kpi-value{font-family:'Bebas Neue';font-size:42px;line-height:1;color:#fff;letter-spacing:.02em}
+    .kpi-detail{color:var(--muted);font-size:13px;line-height:1.5;margin-top:6px}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:var(--radius);background:#0B0E13;border:1px solid var(--line);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#fff}
+    .pill.green{border-color:rgba(29,179,122,.45);color:var(--green)}
+    .pill.orange{border-color:rgba(232,98,42,.45);color:var(--orange)}
+    .pill.blue{border-color:rgba(46,143,224,.45);color:var(--blue)}
+    .pill.red{border-color:rgba(232,58,42,.55);color:var(--red)}
+    .pill.gray{border-color:rgba(210,215,224,.35);color:var(--light-gray)}
+    .progress-wrap{height:8px;background:#090B0E;border:1px solid #242A33;border-radius:var(--radius);overflow:hidden;margin-top:12px}
+    .progress-bar{height:100%;width:0%;background:var(--orange);transition:width .8s cubic-bezier(.2,.8,.2,1),background .4s ease}
+    .progress-bar.green{background:var(--green)}.progress-bar.blue{background:var(--blue)}.progress-bar.red{background:var(--red)}.progress-bar.gray{background:var(--light-gray)}
+    .mini-list{display:grid;gap:8px;margin-top:10px}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px;border-top:1px solid rgba(255,255,255,.06);padding-top:8px}
+    .row strong{color:#fff}
+    .freshness{display:flex;align-items:center;gap:12px;margin-top:10px}
+    .freshness input{width:100%;accent-color:var(--green)}
+    .alert-stack{display:grid;gap:8px}
+    .alert{border-left:3px solid var(--orange);background:#0B0E13;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;color:#fff;font-size:13px;line-height:1.45}
+    .alert.red{border-left-color:var(--red)}.alert.green{border-left-color:var(--green)}.alert.blue{border-left-color:var(--blue)}
+    .phase-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .phase-card{background:#0B0E13;border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+    .phase-card h3{font-family:'Bebas Neue';font-size:28px;margin:0 0 4px;letter-spacing:.03em}.phase-card small{color:var(--muted)}
+    .chart-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;align-items:stretch}
+    .chart-card{padding:16px;min-height:420px;position:relative}
+    .chart-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:14px}
+    .chart-title h3{font-family:'Bebas Neue';font-size:34px;margin:0;line-height:1}
+    .toggle{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    .toggle input{accent-color:var(--orange)}
+    canvas{width:100%!important;max-height:340px}
+    .inline-editor{margin-top:12px;display:none;background:#0B0E13;border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+    .inline-editor.active{display:block}
+    .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    label{display:grid;gap:6px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:900}
+    input,select,textarea{
+      width:100%;border:1px solid #2A303A;background:#090B0E;color:#fff;border-radius:var(--radius);padding:10px 11px;outline:none;
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--orange);box-shadow:0 0 0 1px rgba(232,98,42,.2)}
+    textarea{min-height:92px;resize:vertical;text-transform:none;letter-spacing:normal;font-weight:500;color:#fff}
+    .btn-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+    .btn{border:1px solid var(--orange);background:var(--orange);color:#fff;border-radius:var(--radius);padding:10px 14px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
+    .btn.secondary{background:transparent;color:var(--orange)}
+    .btn.gray{border-color:#333A45;background:#151A22;color:#D2D7E0}.btn.red{border-color:var(--red);background:var(--red)}
+    .timeline{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory}
+    .week-card{min-width:235px;padding:14px;scroll-snap-align:start;transition:transform .25s ease,border-color .25s ease;background:#0F1319;cursor:pointer}
+    .week-card:hover{transform:translateY(-2px);border-color:rgba(232,98,42,.6)}
+    .week-card.active{border:2px solid var(--orange);transform:scale(1.025);background:linear-gradient(180deg,rgba(232,98,42,.16),rgba(15,19,25,.98))}
+    .week-card.race{animation:racePulse 1.9s ease-in-out infinite}
+    @keyframes racePulse{0%,100%{box-shadow:0 0 0 rgba(255,118,47,0)}50%{box-shadow:0 0 28px rgba(255,118,47,.34)}}
+    .week-top{display:flex;justify-content:space-between;gap:8px;align-items:start;margin-bottom:12px}
+    .week-num{font-family:'Bebas Neue';font-size:34px;line-height:1}.week-dates{color:var(--muted);font-size:12px;margin-top:2px}
+    .week-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+    .week-meta div{background:#090B0E;border:1px solid var(--line);border-radius:var(--radius);padding:8px;color:var(--muted);font-size:12px}.week-meta strong{display:block;color:#fff;font-size:16px;margin-top:2px}
+    .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40;display:none}.drawer-backdrop.open{display:block}
+    .drawer{position:fixed;z-index:41;right:0;top:0;bottom:0;width:min(560px,100%);padding:22px;transform:translateX(105%);transition:transform .3s ease;overflow:auto;border-radius:0;background:#0E1218}
+    .drawer.open{transform:translateX(0)}
+    .drawer-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:16px}.drawer h2{font-family:'Bebas Neue';font-size:46px;line-height:.95;margin:0}.drawer-close{background:transparent;border:1px solid var(--line);color:#fff;border-radius:var(--radius);padding:8px 10px}
+    .session-list{display:grid;gap:8px;margin:14px 0}.session-item{background:#090B0E;border:1px solid var(--line);border-radius:var(--radius);padding:11px}.session-item strong{display:block;margin-bottom:4px}.session-item span{color:var(--muted);font-size:13px;line-height:1.45}
+    .blocks-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    .block-card{background:#0F1319;border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-height:210px}
+    .block-card h3{font-family:'Bebas Neue';font-size:32px;margin:0 0 6px}.block-card .metrics{display:grid;gap:7px;margin:12px 0;color:var(--muted);font-size:13px}.block-card strong{color:#fff}
+    .radar-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:12px}.slider-stack{display:grid;gap:12px}.quality-row{display:grid;grid-template-columns:135px 1fr 34px;align-items:center;gap:10px}.quality-row span{font-weight:900;color:#fff}.quality-row output{font-family:'Bebas Neue';font-size:26px;color:var(--orange)}.quality-row input{accent-color:var(--orange)}
+    .journal-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:12px}.journal-list{display:grid;gap:10px;max-height:590px;overflow:auto;padding-right:4px}.journal-item{background:#0B0E13;border:1px solid var(--line);border-radius:var(--radius);padding:12px}.journal-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px}.journal-head strong{font-size:14px}.journal-note{color:var(--light-gray);font-size:13px;line-height:1.5;white-space:pre-wrap}.journal-meta{color:var(--muted);font-size:12px;margin-top:8px}
+    .rules{padding:18px}.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.rules h3{font-family:'Bebas Neue';font-size:32px;margin:0 0 10px}.rule-priority{display:grid;gap:8px;counter-reset:p}.rule-priority div{counter-increment:p;background:#0B0E13;border:1px solid var(--line);border-radius:var(--radius);padding:10px;color:#fff}.rule-priority div:before{content:counter(p);display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;background:var(--orange);font-weight:900;color:#fff;border-radius:var(--radius)}
+    .adjust-table{width:100%;border-collapse:collapse;font-size:13px}.adjust-table th,.adjust-table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}.adjust-table th{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:11px}.key-rule{font-family:'Bebas Neue';font-size:34px;line-height:1.05;margin:10px 0;color:#fff;border-left:3px solid var(--green);padding-left:12px}
+    .quote-panel{padding:26px;overflow:hidden}.quote-frame{position:relative;min-height:160px}.quote-track{display:flex;transition:transform .45s ease}.quote{min-width:100%;font-family:'Bebas Neue';font-size:clamp(42px,6vw,86px);line-height:.95;color:#fff;padding-right:20px}.quote small{display:block;font-family:Inter;font-size:13px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:12px}.quote-controls{display:flex;gap:8px;margin-top:16px}.quote-controls button{background:#090B0E;border:1px solid var(--line);color:#fff;border-radius:var(--radius);padding:10px 12px;font-weight:900}
+    .footer-card{margin-top:30px;padding:24px;display:grid;grid-template-columns:1fr .9fr;gap:20px;align-items:center;overflow:hidden}.footer-title{font-family:'Bebas Neue';font-size:clamp(52px,8vw,110px);line-height:.85}.footer-metrics{color:var(--muted);font-size:14px;line-height:1.7}.profile-svg{width:100%;height:170px}.profile-line{stroke:var(--orange);stroke-width:4;fill:none;stroke-dasharray:900;stroke-dashoffset:900;animation:drawProfile 6s ease-in-out infinite}.profile-fill{fill:rgba(232,98,42,.08)}@keyframes drawProfile{0%{stroke-dashoffset:900}45%,70%{stroke-dashoffset:0}100%{stroke-dashoffset:-900}}
+    .muted{color:var(--muted)}.hidden{display:none!important}.status-done{color:var(--green)}.status-now{color:var(--orange)}.status-future{color:var(--muted)}
+    .type-recuperation,.type-récupération,.type-recuperation-active,.type-récupération-active,.type-recuperation-obligatoire,.type-récupération-obligatoire{color:var(--green);border-color:rgba(29,179,122,.45)}.type-charge,.type-charge-legere,.type-charge-légère,.type-charge-d,.type-amorcage-montagne,.type-amorçage-montagne,.type-absorption,.type-reprise-post-course,.type-relance,.type-specifique,.type-spécifique,.type-gros-bloc,.type-consolidation{color:var(--orange);border-color:rgba(232,98,42,.45)}.type-pic-1,.type-pic-principal,.type-bloc-haute-montagne{color:var(--blue);border-color:rgba(46,143,224,.45)}.type-course,.type-course-secondaire,.type-race-week{color:var(--orange-bright);border-color:rgba(255,118,47,.6)}.type-affutage-1,.type-affûtage-1,.type-affutage-2,.type-affûtage-2{color:var(--light-gray);border-color:rgba(210,215,224,.5)}
+    @media (max-width:1150px){.hero,.chart-grid,.radar-grid,.journal-grid,.footer-card{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:repeat(6,1fr)}.span-2,.span-3,.span-4{grid-column:span 3}.span-6,.span-8,.span-12{grid-column:span 6}.phase-grid,.blocks-grid{grid-template-columns:repeat(2,1fr)}.rules-grid{grid-template-columns:1fr}}
+    @media (max-width:720px){.page{width:calc(100% - 22px);padding-left:4px}.hero-main{padding:20px}.hero{min-height:auto}.countdown-grid{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr}.span-2,.span-3,.span-4,.span-6,.span-8,.span-12{grid-column:span 1}.phase-grid,.blocks-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.section-head{display:block}.week-card{min-width:210px}.quality-row{grid-template-columns:110px 1fr 30px}.footer-title{font-size:56px}.profile-svg{height:120px}}
+    @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="side-progress" aria-hidden="true"><div id="sideProgressFill" class="side-progress-fill"></div></div>
+  <main class="page">
+    <section class="hero" id="top">
+      <div class="hero-main">
+        <div class="eyebrow">Objectif principal · 14 novembre 2026 · Plan V4</div>
+        <h1>TRANSLANTAU50<br>PRÉPARATION</h1>
+        <div class="subtitle">45 km · 2500 D+ · Hong Kong</div>
+        <div class="countdown-grid" aria-label="Compte à rebours TransLantau50">
+          <div class="count-box"><div id="cdDays" class="count-value">--</div><div class="count-label">jours</div></div>
+          <div class="count-box"><div id="cdHours" class="count-value">--</div><div class="count-label">h</div></div>
+          <div class="count-box"><div id="cdMinutes" class="count-value">--</div><div class="count-label">min</div></div>
+          <div class="count-box"><div id="cdSeconds" class="count-value">--</div><div class="count-label">sec</div></div>
+        </div>
+        <div id="heroMantra" class="mantra-hero">HK t'attend. Sois prête.</div>
+      </div>
+      <aside class="hero-side">
+        <div class="section-title">ÉCHÉANCES</div>
+        <div class="mini-races">
+          <div id="sixdCounter" class="mini-race"><div><div class="name">6D Marathon / 6000D</div><div class="muted">43 km · 2100 D+ · S6</div></div><div><div id="sixdDays" class="days">--</div><div class="muted">jours</div></div></div>
+          <div id="luzitrailCounter" class="mini-race"><div><div class="name">Luzi'trail</div><div class="muted">16 km · 410 D+ · S11</div></div><div><div id="luzitrailDays" class="days">--</div><div class="muted">jours</div></div></div>
+          <div id="dolmensCounter" class="mini-race"><div><div class="name">Trail des Dolmens</div><div class="muted">15 km · 370 D+ · S12</div></div><div><div id="dolmensDays" class="days">--</div><div class="muted">jours</div></div></div>
+        </div>
+        <div class="card" style="box-shadow:none;min-height:auto">
+          <div class="kpi-label">Semaine active</div>
+          <div id="heroActiveWeek" class="kpi-value">--</div>
+          <div id="heroActivePhase" class="kpi-detail">--</div>
+        </div>
+        <div class="hero-note">
+          V4 · Zones FC Lucile, Zwift et Compex intégrés. 6D Marathon en objectif B contrôlé, S7 absorption, S8/S9/S14/S18 modulables. Priorité : D+ spécifique, quadriceps, descente propre et fraîcheur finale.
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" id="timeline-section">
+      <div class="section-head"><div><h2 class="section-title">PLANNING SEMAINES</h2><p class="section-sub">Cliquer une semaine pour voir les séances et saisir les données réelles.</p></div></div>
+      <div id="timeline" class="timeline" aria-label="Timeline semaines"></div>
+    </section>
+
+    <section class="section" id="journal">
+      <div class="section-head"><div><h2 class="section-title">JOURNAL DE BORD</h2><p class="section-sub">Entrées stockées localement, filtrables par type et supprimables.</p></div></div>
+      <div class="journal-grid">
+        <form id="journalForm" class="card">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr">
+            <label>Date<input id="journalDate" type="date"></label>
+            <label>Type<select id="journalType"></select></label>
+            <label>Ressenti<select id="journalMood"><option>😴</option><option>😐</option><option selected>💪</option><option>🔥</option></select></label>
+            <label>Km<input id="journalKm" type="number" min="0" step="0.1"></label>
+            <label>D+<input id="journalDp" type="number" min="0" step="1"></label>
+          </div>
+          <label style="margin-top:10px">Notes<textarea id="journalNotes" placeholder="Ressenti, douleur, nutrition, météo, descente, quadriceps..."></textarea></label>
+          <div class="btn-row"><button class="btn" type="submit">Ajouter au journal</button></div>
+        </form>
+        <div class="card">
+          <div class="btn-row" style="margin-top:0;margin-bottom:10px"><label style="max-width:240px">Filtrer<select id="journalFilter"></select></label></div>
+          <div id="journalList" class="journal-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="volume-section">
+      <div class="section-head"><div><h2 class="section-title">GRAPHIQUE VOLUME</h2><p class="section-sub">Courbe cible, courbe réelle, option D+ et marqueurs courses. Cliquer un point de semaine passée ou active pour saisir les données réelles.</p></div></div>
+      <div class="chart-card">
+        <div class="chart-title"><h3>Volume 22 semaines</h3><label class="toggle"><input id="toggleDp" type="checkbox">Afficher D+ axe droit</label></div>
+        <canvas id="volumeChart" aria-label="Graphique volume"></canvas>
+        <div id="inlineWeekEditor" class="inline-editor">
+          <div class="kpi-label" id="inlineEditorTitle">Saisie semaine</div>
+          <div class="form-grid">
+            <label>Km réel<input id="inlineKm" type="number" min="0" step="0.1"></label>
+            <label>D+ réel<input id="inlineDp" type="number" min="0" step="1"></label>
+            <label>Séances<input id="inlineSessions" type="number" min="0" step="1"></label>
+            <label>Note courte<input id="inlineNotes" type="text" placeholder="optionnel"></label>
+          </div>
+          <div class="btn-row"><button id="inlineSave" class="btn">Sauvegarder</button><button id="inlineClose" class="btn gray">Fermer</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="atlctl-section">
+      <div class="section-head"><div><h2 class="section-title">GRAPHIQUE ATL / CTL</h2><p class="section-sub">Ratio charge aiguë / charge chronique. Zone verte 0.8–1.3, alerte surcharge ou désentraînement hors zone.</p></div></div>
+      <div class="chart-card">
+        <div class="chart-title"><h3>ATL / CTL</h3><span class="pill green">Zone utile 0.8–1.3</span></div>
+        <canvas id="atlCtlChart" aria-label="Graphique ATL CTL"></canvas>
+        <p class="section-sub">ATL = km semaine active. CTL = moyenne km des 4 dernières semaines saisies. Les semaines sans saisie sont exclues.</p>
+      </div>
+    </section>
+
+    <section class="section" id="dashboard">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">TABLEAU DE BORD</h2>
+          <p class="section-sub">Toutes les valeurs planifiées sont calculées depuis le plan V4 S0–S21. Les valeurs réalisées proviennent de localStorage.</p>
+        </div>
+        <button class="btn secondary" id="resetDemoBtn" title="Supprime les données locales de suivi">Réinitialiser suivi local</button>
+      </div>
+      <div class="dashboard-grid">
+        <div class="card span-3"><div class="kpi-label">Semaine en cours</div><div id="kpiWeek" class="kpi-value">--</div><div id="kpiWeekStatus" class="kpi-detail">--</div></div>
+        <div class="card span-3"><div class="kpi-label">Phase en cours</div><div id="kpiPhase" class="kpi-value">--</div><div id="kpiPhaseDetail" class="kpi-detail">--</div></div>
+        <div class="card span-2"><div class="kpi-label">Jours TL50</div><div id="kpiDaysMain" class="kpi-value">--</div><div class="kpi-detail">avant Hong Kong</div></div>
+        <div class="card span-2"><div class="kpi-label">Semaines TL50</div><div id="kpiWeeksMain" class="kpi-value">--</div><div class="kpi-detail">avant course</div></div>
+        <div class="card span-2" id="kpiSecondaryWrap"><div class="kpi-label">Secondaires</div><div id="kpiSecondary" class="kpi-detail">--</div></div>
+
+        <div class="card span-4"><div class="kpi-label">Km réalisés / plan total</div><div id="kpiKmTotal" class="kpi-value">--</div><div class="progress-wrap"><div id="barKmTotal" class="progress-bar"></div></div><div id="detailKmTotal" class="kpi-detail">--</div></div>
+        <div class="card span-4"><div class="kpi-label">D+ réalisé / plan total</div><div id="kpiDpTotal" class="kpi-value">--</div><div class="progress-wrap"><div id="barDpTotal" class="progress-bar blue"></div></div><div id="detailDpTotal" class="kpi-detail">--</div></div>
+        <div class="card span-4"><div class="kpi-label">Séances réalisées / prévues</div><div id="kpiSessionsTotal" class="kpi-value">--</div><div class="progress-wrap"><div id="barSessionsTotal" class="progress-bar green"></div></div><div id="detailSessionsTotal" class="kpi-detail">--</div></div>
+
+        <div class="card span-3"><div class="kpi-label">Écart km cumulé vs plan</div><div id="kpiKmGap" class="kpi-value">--</div><div id="kpiKmGapDetail" class="kpi-detail">--</div></div>
+        <div class="card span-3"><div class="kpi-label">Écart D+ cumulé vs plan</div><div id="kpiDpGap" class="kpi-value">--</div><div id="kpiDpGapDetail" class="kpi-detail">--</div></div>
+        <div class="card span-3"><div class="kpi-label">ATL / CTL</div><div id="kpiAtlCtl" class="kpi-value">--</div><div id="kpiAtlCtlDetail" class="kpi-detail">--</div><div class="progress-wrap"><div id="barAtlCtl" class="progress-bar"></div></div></div>
+        <div class="card span-3"><div class="kpi-label">Nutrition</div><select id="nutritionStatus" aria-label="Statut nutrition"></select><div id="nutritionDetail" class="kpi-detail">--</div></div>
+
+        <div class="card span-4"><div class="kpi-label">Semaine active · km</div><div id="kpiKmWeek" class="kpi-value">--</div><div id="detailKmWeek" class="kpi-detail">--</div></div>
+        <div class="card span-4"><div class="kpi-label">Semaine active · D+</div><div id="kpiDpWeek" class="kpi-value">--</div><div id="detailDpWeek" class="kpi-detail">--</div></div>
+        <div class="card span-4"><div class="kpi-label">Semaine active · séances</div><div id="kpiSessionsWeek" class="kpi-value">--</div><div id="detailSessionsWeek" class="kpi-detail">--</div></div>
+
+        <div class="card span-4"><div class="kpi-label">Fraîcheur perçue</div><div class="freshness"><input id="freshnessSlider" type="range" min="1" max="10" value="7"><span id="freshnessValue" class="pill green">7/10</span></div><div id="freshnessDetail" class="kpi-detail">Vert ≥7 · orange 4–6 · rouge ≤3</div></div>
+        <div class="card span-4"><div class="kpi-label">Projection km à J-1</div><div id="projectionKm" class="kpi-value">--</div><div id="projectionKmDetail" class="kpi-detail">--</div></div>
+        <div class="card span-4"><div class="kpi-label">Projection D+ à J-1</div><div id="projectionDp" class="kpi-value">--</div><div id="projectionDpDetail" class="kpi-detail">--</div></div>
+
+        <div class="card span-12"><div class="kpi-label">Alertes intelligentes</div><div id="alerts" class="alert-stack"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="blocks">
+      <div class="section-head"><div><h2 class="section-title">BILAN PAR BLOC</h2><p class="section-sub">S0 + 4 phases. Les écarts sont calculés par rapport aux moyennes km/D+ du plan.</p></div></div>
+      <div id="blocksGrid" class="blocks-grid"></div>
+    </section>
+
+    <footer class="footer-card">
+      <div>
+        <div class="footer-title">HK · 14.11.2026 · 45 KM · 2500 D+</div>
+        <div id="footerTotals" class="footer-metrics">Totaux plan calculés...</div>
+      </div>
+      <svg class="profile-svg" viewBox="0 0 900 260" role="img" aria-label="Profil de course stylisé">
+        <path class="profile-fill" d="M20 225 L20 205 L90 198 L145 173 L210 182 L285 112 L340 145 L398 92 L470 120 L540 64 L615 128 L688 94 L760 154 L835 132 L880 174 L880 225 Z"></path>
+        <path class="profile-line" d="M20 205 L90 198 L145 173 L210 182 L285 112 L340 145 L398 92 L470 120 L540 64 L615 128 L688 94 L760 154 L835 132 L880 174"></path>
+      </svg>
+    </footer>
+  </main>
+
+  <div id="drawerBackdrop" class="drawer-backdrop"></div>
+  <aside id="drawer" class="drawer" aria-label="Détail semaine">
+    <div class="drawer-head"><div><h2 id="drawerTitle">Semaine</h2><div id="drawerMeta" class="muted"></div></div><button id="drawerClose" class="drawer-close">Fermer</button></div>
+    <div id="drawerSessions" class="session-list"></div>
+    <div class="card" style="box-shadow:none">
+      <div class="form-grid">
+        <label>Km réel<input id="drawerKm" type="number" min="0" step="0.1"></label>
+        <label>D+ réel<input id="drawerDp" type="number" min="0" step="1"></label>
+        <label>Séances réalisées<input id="drawerSessionsDone" type="number" min="0" step="1"></label>
+        <label>Notes libres<textarea id="drawerNotes"></textarea></label>
+      </div>
+      <div class="btn-row"><button id="drawerSave" class="btn">Sauvegarder</button><button id="drawerDelete" class="btn red">Effacer semaine</button></div>
+    </div>
+  </aside>
+
+<script>
+(() => {
+  'use strict';
+
+  const MS_DAY = 24 * 60 * 60 * 1000;
+  const STORAGE = {
+    weeks: 'tl50_week_data',
+    radar: 'tl50_radar',
+    journal: 'tl50_journal',
+    freshness: 'tl50_fraicheur'
+  };
+  const RACES = {
+    main: { name:'TransLantau50', date:'2026-11-14T08:00:00+08:00', week:21, km:45, dp:2500 },
+    sixd: { name:'6D Marathon / 6000D', date:'2026-08-01T07:00:00+02:00', week:6, km:43, dp:2100 },
+    luzitrail: { name:"Luzi'trail", date:'2026-09-06T09:00:00+02:00', week:11, km:16, dp:410 },
+    dolmens: { name:'Trail des Dolmens', date:'2026-09-13T09:00:00+02:00', week:12, km:15, dp:370 }
+  };
+  const MANTRAS = [
+    'Les jambes souffrent, la tête décide.',
+    "Chaque descente s'apprend.",
+    "Ce que tu endures aujourd'hui, tu le déposeras en haut.",
+    "La performance se construit dans l'obscurité.",
+    'Pas de podium sans les mauvaises journées.',
+    'Les crampes du samedi font les PBs du dimanche.',
+    "HK t'attend. Sois prête.",
+    'Le trail ne ment pas.'
+  ];
+  const QUOTES = [
+    ...MANTRAS,
+    'La montagne ne se négocie pas. — Kilian Jornet',
+    "La douleur est temporaire, la fierté est éternelle. — François D'Haene",
+    "La performance de demain se construit dans l'obscurité d'aujourd'hui.",
+    'Chaque mètre de D+ est un investissement.'
+  ];
+  const JOURNAL_TYPES = ['EF','Trail','Côtes','Descentes','Tempo','PPG-Renfo','Repos','Course','Autre'];
+  const QUALITIES = ['Endurance','Descentes','VMA','Force musculaire','Mental','Récupération'];
+
+  const PLAN = [
+  {
+    "i": 0,
+    "start": "2026-06-16",
+    "dates": "16–21 juin",
+    "type": "reprise post-course",
+    "label": "Reprise post-course",
+    "objective": "reprise anticipée contrôlée",
+    "kmMin": 12,
+    "kmMax": 16,
+    "dpMin": 100,
+    "dpMax": 150,
+    "phase": "S0 — Reprise post-course",
+    "sessionsPlanned": 4,
+    "race": null,
+    "seances": [
+      [
+        "Mardi",
+        "Repos, marche ou mobilité · RPE 1–2 · CX4 optionnel · Déverrouillage"
+      ],
+      [
+        "Mercredi",
+        "Footing 30–35 min très facile · <143 à 153 max, RPE 2–3 · CX1 si jambes lourdes · Reprise impact"
+      ],
+      [
+        "Jeudi",
+        "Mobilité + gainage léger 20 min · RPE 2 · Stabilité"
+      ],
+      [
+        "Vendredi",
+        "35–40 min EF + 4 lignes droites 12 sec si jambes parfaites · 143–153, RPE 3 · Tonicité"
+      ],
+      [
+        "Samedi",
+        "Repos ou ZW1 35–45 min · <143, RPE 1–2 · CX2 optionnel · Récupération"
+      ],
+      [
+        "Dimanche",
+        "45–50 min facile, 100–150 D+ max · 143–153, RPE 3–4 · CX1 quadriceps/mollets · Reprise terrain"
+      ],
+      [
+        "Objectif ",
+        "relancer la mécanique sans fatigue post-course."
+      ],
+      [
+        "Renforcement ",
+        "aucun renforcement jambes lourd."
+      ]
+    ]
+  },
+  {
+    "i": 1,
+    "start": "2026-06-22",
+    "dates": "22–28 juin",
+    "type": "récupération active",
+    "label": "Récupération active",
+    "objective": "reprise douce + Zwift récupération",
+    "kmMin": 24,
+    "kmMax": 24,
+    "dpMin": 300,
+    "dpMax": 300,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos ou mobilité 15 min · RPE 1 · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "Footing 40 min très facile · <143–153, RPE 3 · Fréquence"
+      ],
+      [
+        "Mercredi",
+        "Renfo léger : gainage, fessiers, mollets · RPE 3 · CX2 mollets optionnel · Stabilité"
+      ],
+      [
+        "Jeudi",
+        "Footing 45 min EF · 143–153, RPE 3–4 · Base aérobie"
+      ],
+      [
+        "Vendredi",
+        "ZW1 35–45 min ou repos · <143, RPE 1–2 · CX4 optionnel · Récupération active"
+      ],
+      [
+        "Samedi",
+        "Trail facile 1h10–1h20, 200–300 D+ · 143–153, RPE 4 · CX1 quadriceps/mollets · Terrain souple"
+      ],
+      [
+        "Dimanche",
+        "Repos ou marche · RPE 1–2 · Fraîcheur"
+      ],
+      [
+        "Objectif ",
+        "reprendre proprement, sans dette."
+      ]
+    ]
+  },
+  {
+    "i": 2,
+    "start": "2026-06-29",
+    "dates": "29 juin–5 juillet",
+    "type": "charge légère",
+    "label": "Charge légère",
+    "objective": "base aérobie + côtes courtes",
+    "kmMin": 35,
+    "kmMax": 35,
+    "dpMin": 700,
+    "dpMax": 700,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 6,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "50 min EF + 6 lignes droites · 143–153, RPE 3–4 · Vitesse relâchée"
+      ],
+      [
+        "Mercredi",
+        "Renfo A force montée · RPE 5 · CX3 léger fessiers/quads seulement si fraîche · Force"
+      ],
+      [
+        "Jeudi",
+        "8 × 45 sec côte, récup descente lente · RPE 7 · CX1 léger le soir si besoin · Puissance côte"
+      ],
+      [
+        "Vendredi",
+        "ZW1 35–45 min ou repos · <143 · Drainage"
+      ],
+      [
+        "Samedi",
+        "1h45 trail, 500 D+ · 143–153, pointes 153–163, RPE 4–5 · CX1 quadriceps/mollets · D+ facile"
+      ],
+      [
+        "Dimanche",
+        "40 min récupération · <143, RPE 2–3 · CX2 optionnel · Récupération"
+      ],
+      [
+        "Objectif ",
+        "retrouver tonicité et force en côte sans fatigue lourde."
+      ],
+      [
+        "Renforcement ",
+        "2 séances courtes max, pas de courbatures recherchées."
+      ]
+    ]
+  },
+  {
+    "i": 3,
+    "start": "2026-07-06",
+    "dates": "6–12 juillet",
+    "type": "charge",
+    "label": "Charge",
+    "objective": "reprise côtes + force-endurance",
+    "kmMin": 43,
+    "kmMax": 43,
+    "dpMin": 1000,
+    "dpMax": 1000,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 6,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "3 × 8 min Z3 basse en vallonné · 153–163, RPE 6 · Tempo trail"
+      ],
+      [
+        "Mercredi",
+        "ZW2 45–60 min ou footing EF 45 min · 143–153, RPE 3 · Volume sans dette"
+      ],
+      [
+        "Jeudi",
+        "10 × 1 min côte, récup complète · RPE 7 · CX1 si quadriceps lourds · Puissance montée"
+      ],
+      [
+        "Vendredi",
+        "Renfo B quadriceps descente, contrôlé · RPE 5 · CX3 très léger ou rien · Prévention descente"
+      ],
+      [
+        "Samedi",
+        "2h00–2h15 trail, 700 D+ · 143–153, RPE 4–5 · CX1 quadriceps/mollets · Sortie D+"
+      ],
+      [
+        "Dimanche",
+        "45–50 min EF ou ZW1 si fatigue · <143–153, RPE 2–3 · CX2 optionnel · Récupération"
+      ],
+      [
+        "Objectif ",
+        "monter en charge, garder la descente propre."
+      ],
+      [
+        "Descente ",
+        "propre, technique, pas rapide."
+      ]
+    ]
+  },
+  {
+    "i": 4,
+    "start": "2026-07-13",
+    "dates": "13–19 juillet",
+    "type": "charge",
+    "label": "Charge",
+    "objective": "première vraie semaine trail",
+    "kmMin": 50,
+    "kmMax": 50,
+    "dpMin": 1300,
+    "dpMax": 1300,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 6,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "4 × 6 min côte longue · 153–163, seuil court possible, RPE 7 · Force montée"
+      ],
+      [
+        "Mercredi",
+        "50 min EF · 143–153, RPE 3 · Volume facile"
+      ],
+      [
+        "Jeudi",
+        "1h avec 8 × 30 sec relance faux plat · RPE 6–7 sur relances · CX1 léger si besoin · Tonicité"
+      ],
+      [
+        "Vendredi",
+        "Renfo A + mobilité · RPE 5 · Pas de CX3 si jambes lourdes · Force utile"
+      ],
+      [
+        "Samedi",
+        "2h30 trail, 900–1 000 D+ · 143–153, pointes 153–163, RPE 5 · CX1 quadriceps/mollets · Long trail D+"
+      ],
+      [
+        "Dimanche",
+        "45 min récupération ou ZW1 · <143, RPE 2–3 · CX2 optionnel · Absorption"
+      ],
+      [
+        "Objectif ",
+        "première semaine structurée trail, sans finir rincée."
+      ]
+    ]
+  },
+  {
+    "i": 5,
+    "start": "2026-07-20",
+    "dates": "20–26 juillet",
+    "type": "assimilation pré-6D",
+    "label": "Assimilation pré-6D",
+    "objective": "fraîcheur relative avant course",
+    "kmMin": 34,
+    "kmMax": 38,
+    "dpMin": 650,
+    "dpMax": 800,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "45 min EF + 5 × 20 sec relâchées · 143–153, RPE 3–5 · Tonicité"
+      ],
+      [
+        "Mercredi",
+        "Renfo léger haut du corps / gainage ou repos · RPE 2–3 · CX2 optionnel · Stabilité"
+      ],
+      [
+        "Jeudi",
+        "50 min vallonné facile, 300–400 D+ · 143–153, RPE 4 · Rappel D+"
+      ],
+      [
+        "Vendredi",
+        "Repos · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "1h25–1h40 trail facile, 350–450 D+ · 143–153, RPE 4 · CX1 léger · Dernier rappel trail"
+      ],
+      [
+        "Dimanche",
+        "35–40 min récupération ou ZW1 · <143, RPE 2–3 · Relâchement"
+      ],
+      [
+        "Objectif ",
+        "arriver fraîche sur la 6D Marathon sans casser la progression."
+      ],
+      [
+        "Nutrition ",
+        "test léger 40–60 g glucides/h sur la sortie de samedi si >1h30."
+      ],
+      [
+        "Interdits ",
+        "côte dure, descente cassante, Compex force, renfo jambes lourd."
+      ]
+    ]
+  },
+  {
+    "i": 6,
+    "start": "2026-07-27",
+    "dates": "27 juillet–2 août",
+    "type": "6D Marathon",
+    "label": "6D Marathon",
+    "objective": "course préparatoire montagne",
+    "kmMin": 50,
+    "kmMax": 56,
+    "dpMin": 2300,
+    "dpMax": 2600,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 4,
+    "race": "6D Marathon / 6000D",
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Mardi",
+        "45 min EF + 5 × 30 sec relâchées · 143–153, RPE 3–5 · Activation"
+      ],
+      [
+        "Mercredi",
+        "35–40 min très facile ou repos · <143, RPE 2–3 · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Jeudi",
+        "30–35 min + 4 lignes droites 15 sec · <143–153, RPE 3–5 · Tension musculaire"
+      ],
+      [
+        "Vendredi",
+        "Repos / trajet / mobilité 15 min · RPE 1 · Pas de Compex fort · Pré-course"
+      ],
+      [
+        "Samedi",
+        "6D Marathon — 43 km / 2100 D+ · RPE 5–7 progressif · CX1 le soir si possible · Test montagne long"
+      ],
+      [
+        "Dimanche",
+        "Repos, marche douce ou ZW1 30–40 min · <143, RPE 1–2 · CX1 quadriceps/mollets · Déverrouillage"
+      ],
+      [
+        "Départ à mi-course",
+        "RPE 5–6, aucune dette respiratoire, marche active dès que rentable"
+      ],
+      [
+        "Montées longues",
+        "143–153 majoritaire, 153–163 contrôlé, pas de seuil durable"
+      ],
+      [
+        "Descentes",
+        "fluide, cadence courte, pas de chasse au chrono"
+      ],
+      [
+        "Dernier tiers",
+        "RPE 6–7 seulement si quadriceps stables"
+      ],
+      [
+        "Derniers kilomètres",
+        "engager uniquement si foulée propre et absence de douleur"
+      ],
+      [
+        "Objectif ",
+        "stress spécifique montagne contrôlé. Pas pic de forme."
+      ],
+      [
+        "Nutrition ",
+        "70 g glucides/h, prise toutes les 20 min, hydratation dès le départ."
+      ],
+      [
+        "Critère de réussite ",
+        "récupération correcte en 5 à 7 jours."
+      ]
+    ]
+  },
+  {
+    "i": 7,
+    "start": "2026-08-03",
+    "dates": "3–9 août",
+    "type": "absorption 6D",
+    "label": "Absorption 6D",
+    "objective": "récupérer de la 6D",
+    "kmMin": 34,
+    "kmMax": 42,
+    "dpMin": 700,
+    "dpMax": 1000,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 4,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX1 quadriceps/mollets · Récupération"
+      ],
+      [
+        "Mardi",
+        "Repos, marche ou ZW1 30–40 min · <143, RPE 1–2 · CX1 ou CX4 · Drainage"
+      ],
+      [
+        "Mercredi",
+        "40–45 min EF très facile · <143–153, RPE 2–3 · Test jambes"
+      ],
+      [
+        "Jeudi",
+        "45–50 min vallonné doux + 4 × 20 sec si jambes normales · 143–153, RPE 3–5 · CX2 optionnel · Tonicité légère"
+      ],
+      [
+        "Vendredi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Samedi",
+        "1h30–1h45 trail facile, 500–700 D+ · 143–153, RPE 4 · CX1 quadriceps/mollets · Reprise trail douce"
+      ],
+      [
+        "Dimanche",
+        "35–45 min récupération ou ZW1 ou repos · <143, RPE 2–3 · Fraîcheur"
+      ],
+      [
+        "Objectif ",
+        "absorber. Cette semaine est volontairement contrôlée."
+      ],
+      [
+        "Renforcement ",
+        "aucun renforcement jambes si courbatures. Gainage léger seulement."
+      ],
+      [
+        "Interdits ",
+        "descente engagée, côtes RPE 7–8, tempo, Compex force."
+      ]
+    ]
+  },
+  {
+    "i": 8,
+    "start": "2026-08-10",
+    "dates": "10–16 août",
+    "type": "relance pré-montagne",
+    "label": "Relance pré-montagne",
+    "objective": "préparer le bloc D+ sans fatigue",
+    "kmMin": 48,
+    "kmMax": 54,
+    "dpMin": 1500,
+    "dpMax": 1800,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "4 × 6 min côte contrôlée · 153–163, RPE 6–7 · Force montée contrôlée"
+      ],
+      [
+        "Mercredi",
+        "50–55 min EF ou ZW2 50–60 min · 143–153, RPE 3–4 · Volume facile"
+      ],
+      [
+        "Jeudi",
+        "1h technique descente souple + relances légères · RPE 5 max musculaire · CX1 quadriceps · Qualité sans casse"
+      ],
+      [
+        "Vendredi",
+        "Repos ou mobilité 20 min · RPE 1–2 · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "2h15–2h35 trail, 800–1 000 D+ · 143–153, RPE 5 · CX1 quadriceps/mollets · Dernier rappel D+"
+      ],
+      [
+        "Dimanche",
+        "45–60 min très facile ou ZW1 ou repos · <143, RPE 2–3 · CX2 optionnel · Absorption"
+      ],
+      [
+        "Quadriceps lourds mardi",
+        "remplacer côtes par 45 min EF ou ZW1"
+      ],
+      [
+        "Descente encore subie",
+        "supprimer la séance descente du jeudi"
+      ],
+      [
+        "Courbatures >72 h",
+        "limiter semaine à 40–45 km et 1 000–1 300 D+"
+      ],
+      [
+        "FC haute en EF",
+        "ZW1 ou footing Z1 uniquement"
+      ],
+      [
+        "Motivation basse + jambes lourdes",
+        "préserver S9, ne pas forcer S8"
+      ],
+      [
+        "Objectif ",
+        "relancer sans arriver entamée au bloc montagne."
+      ],
+      [
+        "Renforcement ",
+        "1 séance légère uniquement, gainage/fessiers/mollets. Pas de charge lourde."
+      ],
+      [
+        "Nutrition ",
+        "60–70 g glucides/h sur la sortie longue."
+      ]
+    ]
+  },
+  {
+    "i": 9,
+    "start": "2026-08-17",
+    "dates": "17–23 août",
+    "type": "bloc haute montagne",
+    "label": "Bloc haute montagne",
+    "objective": "gros D+ spécifique contrôlé",
+    "kmMin": 56,
+    "kmMax": 64,
+    "dpMin": 3300,
+    "dpMax": 4200,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 6,
+    "race": null,
+    "seances": [
+      [
+        "Lundi 17",
+        "Rando-course 2h15–2h45, 700–900 D+ · 143–153, RPE 4–5 · CX1 le soir · Entrer dans le bloc"
+      ],
+      [
+        "Mardi 18",
+        "1h45–2h15, 700–850 D+ avec 2 à 3 × 12 min marche active raide · 153–163 sur blocs, RPE 5–6 · CX1 optionnel · Spécifique montée"
+      ],
+      [
+        "Mercredi 19",
+        "1h30–1h50 facile, 400–600 D+ · <143–153, RPE 3–4 · CX2 ou CX4 · Absorption active"
+      ],
+      [
+        "Jeudi 20",
+        "Grosse journée 3h15–4h15, 1 200–1 600 D+ · 143–153 majoritaire, RPE 5–6 · CX1 quadriceps/mollets · Stress principal"
+      ],
+      [
+        "Vendredi 21",
+        "1h00–1h30 récupération montagne, 300–500 D+ · <143–153, RPE 3 · CX1 ou CX4 · Déverrouillage"
+      ],
+      [
+        "Samedi 22",
+        "Repos ou marche très facile · RPE 1–2 · CX1 si jambes lourdes · Assimilation"
+      ],
+      [
+        "Dimanche 23",
+        "45–60 min footing Z1 si jambes correctes, sinon repos · <143, RPE 2–3 · Retour au calme"
+      ],
+      [
+        "Objectif ",
+        "bloc clé D+, marche active, résistance quadriceps, nutrition, descente contrôlée."
+      ],
+      [
+        "Point clé",
+        "aucune douleur ;"
+      ],
+      [
+        "Point clé",
+        "quadriceps normaux ;"
+      ],
+      [
+        "Point clé",
+        "sommeil correct ;"
+      ],
+      [
+        "Point clé",
+        "descente fluide ;"
+      ],
+      [
+        "Point clé",
+        "FC stable en endurance ;"
+      ],
+      [
+        "Point clé",
+        "motivation haute sans jambes lourdes."
+      ],
+      [
+        "Renforcement ",
+        "aucun renforcement jambes."
+      ],
+      [
+        "Compex ",
+        "récupération uniquement, pas de force."
+      ]
+    ]
+  },
+  {
+    "i": 10,
+    "start": "2026-08-24",
+    "dates": "24–30 août",
+    "type": "absorption montagne",
+    "label": "Absorption montagne",
+    "objective": "récupérer du bloc montagne",
+    "kmMin": 38,
+    "kmMax": 45,
+    "dpMin": 900,
+    "dpMax": 1200,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 4,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX1 ou CX4 · Récupération"
+      ],
+      [
+        "Mardi",
+        "45 min EF · <143–153, RPE 3 · Déverrouillage"
+      ],
+      [
+        "Mercredi",
+        "Repos ou ZW1 40 min · <143, RPE 1–2 · CX2 optionnel · Sans impact"
+      ],
+      [
+        "Jeudi",
+        "50 min vallonné facile + 5 × 30 sec relâchées · 143–153, RPE 4–5 max · Tonicité"
+      ],
+      [
+        "Vendredi",
+        "Repos · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "1h45–2h trail facile, 600–800 D+ · 143–153, RPE 4 · CX1 quadriceps/mollets · Reprise trail"
+      ],
+      [
+        "Dimanche",
+        "35–45 min récupération ou ZW1 · <143, RPE 2–3 · Absorption"
+      ],
+      [
+        "Objectif ",
+        "absorber le bloc montagne avant Luzi’trail."
+      ],
+      [
+        "Interdits ",
+        "côtes dures, descente engagée, tempo long, Compex force."
+      ]
+    ]
+  },
+  {
+    "i": 11,
+    "start": "2026-08-31",
+    "dates": "31 août–6 sept.",
+    "type": "course secondaire",
+    "label": "Course secondaire",
+    "objective": "Luzi’trail contrôlé",
+    "kmMin": 38,
+    "kmMax": 42,
+    "dpMin": 800,
+    "dpMax": 900,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 5,
+    "race": "Luzi'trail",
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "45 min EF + 5 × 30 sec · 143–153, RPE 3–5 · Activation"
+      ],
+      [
+        "Mercredi",
+        "35–40 min facile ou ZW1 · <143–153, RPE 3 · CX2 optionnel · Fraîcheur"
+      ],
+      [
+        "Jeudi",
+        "30 min + 4 lignes droites · RPE 3–5 · Tension musculaire"
+      ],
+      [
+        "Vendredi",
+        "Repos · pas de Compex fort · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "20 min shake-out optionnel · RPE 2–3 · Déverrouillage"
+      ],
+      [
+        "Dimanche",
+        "Luzi’trail 16 km / 410 D+ · course contrôlée · CX1 le soir · Test intensité"
+      ],
+      [
+        "Objectif ",
+        "test d'intensité sans dette musculaire."
+      ]
+    ]
+  },
+  {
+    "i": 12,
+    "start": "2026-09-07",
+    "dates": "7–13 sept.",
+    "type": "course secondaire",
+    "label": "Course secondaire",
+    "objective": "Dolmens selon fraîcheur",
+    "kmMin": 38,
+    "kmMax": 42,
+    "dpMin": 900,
+    "dpMax": 1100,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 5,
+    "race": "Trail des Dolmens",
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX1 ou CX4 · Récup Luzi’trail"
+      ],
+      [
+        "Mardi",
+        "40 min très facile ou ZW1 · <143, RPE 2–3 · Déverrouillage"
+      ],
+      [
+        "Mercredi",
+        "50 min EF · 143–153, RPE 3–4 · Base"
+      ],
+      [
+        "Jeudi",
+        "35 min + 5 lignes droites · RPE 3–5 · CX2 optionnel · Activation"
+      ],
+      [
+        "Vendredi",
+        "Repos · pas de Compex fort · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "20–25 min souple · RPE 2–3 · Pré-course"
+      ],
+      [
+        "Dimanche",
+        "Trail des Dolmens 15 km / 370 D+ · selon fraîcheur · CX1 le soir · Test contrôlé"
+      ],
+      [
+        "Objectif ",
+        "deuxième test court, subordonné à la récupération de Luzi’trail."
+      ],
+      [
+        "Point clé",
+        "jambes fraîches : tempo, dernier tiers engagé ;"
+      ],
+      [
+        "Point clé",
+        "fatigue modérée : course contrôlée ;"
+      ],
+      [
+        "Point clé",
+        "quadriceps lourds : footing avec dossard ;"
+      ],
+      [
+        "Point clé",
+        "douleur : pas de course."
+      ]
+    ]
+  },
+  {
+    "i": 13,
+    "start": "2026-09-14",
+    "dates": "14–20 sept.",
+    "type": "relance",
+    "label": "Relance",
+    "objective": "réassimilation",
+    "kmMin": 48,
+    "kmMax": 52,
+    "dpMin": 1300,
+    "dpMax": 1300,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "50 min EF · 143–153, RPE 3 · Relance douce"
+      ],
+      [
+        "Mercredi",
+        "Renfo A léger ou ZW2 45 min · 143–153 si Zwift · CX2 optionnel · Volume / stabilité"
+      ],
+      [
+        "Jeudi",
+        "3 × 8 min Z3 basse · 153–163, RPE 6 · Tempo trail"
+      ],
+      [
+        "Vendredi",
+        "Repos ou mobilité · RPE 1–2 · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "2h15 trail, 800–1 000 D+ · 143–153, RPE 4–5 · CX1 quadriceps/mollets · Relance D+"
+      ],
+      [
+        "Dimanche",
+        "45 min récupération ou ZW1 · <143, RPE 2–3 · Absorption"
+      ],
+      [
+        "Objectif ",
+        "repartir sans dette des deux courses secondaires."
+      ],
+      [
+        "Renforcement ",
+        "1 séance, 2 seulement si récupération excellente."
+      ]
+    ]
+  },
+  {
+    "i": 14,
+    "start": "2026-09-21",
+    "dates": "21–27 sept.",
+    "type": "spécifique",
+    "label": "Spécifique",
+    "objective": "entrée bloc TransLantau modulable",
+    "kmMin": 58,
+    "kmMax": 65,
+    "dpMin": 2000,
+    "dpMax": 2600,
+    "phase": "Phase 3 — Spécifique TransLantau",
+    "sessionsPlanned": 6,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "3 × 12 min montée soutenue · 153–163, RPE 7 · Marche/course montée"
+      ],
+      [
+        "Mercredi",
+        "1h EF vallonnée ou ZW2 60 min si fatigue impact · 143–153, RPE 3–4 · Volume facile"
+      ],
+      [
+        "Jeudi",
+        "1h20 descente technique + relances · RPE 5–6 musculaire · CX1 quadriceps · Quadriceps + relance"
+      ],
+      [
+        "Vendredi",
+        "Renfo léger, pas d'excentrique lourd · RPE 4–5 · pas de CX3 sauf jambes parfaites · Stabilité"
+      ],
+      [
+        "Samedi",
+        "3h15–3h30 trail, 1 300–1 700 D+ · RPE 5–6 · CX1 quadriceps/mollets · Sortie spécifique"
+      ],
+      [
+        "Dimanche",
+        "1h00–1h10 récupération vallonnée ou ZW1 · <143–153, RPE 3 · CX2 optionnel · Back-to-back léger"
+      ],
+      [
+        "Jambes fraîches",
+        "65 km / 2 600 D+ OK"
+      ],
+      [
+        "Jambes moyennes",
+        "58–62 km / 2 000–2 300 D+"
+      ],
+      [
+        "Quadriceps lourds",
+        "50–55 km / 1 500–1 800 D+"
+      ],
+      [
+        "Douleur",
+        "pas de bloc spécifique, récupération prioritaire"
+      ],
+      [
+        "Objectif ",
+        "entrer dans le bloc spécifique sans payer les courses secondaires."
+      ],
+      [
+        "Nutrition ",
+        "70 g glucides/h sur la sortie longue."
+      ],
+      [
+        "Matériel ",
+        "sac, flasques, chaussures, éventuellement bâtons."
+      ]
+    ]
+  },
+  {
+    "i": 15,
+    "start": "2026-09-28",
+    "dates": "28 sept.–4 oct.",
+    "type": "gros bloc",
+    "label": "Gros bloc",
+    "objective": "gros week-end D+",
+    "kmMin": 76,
+    "kmMax": 78,
+    "dpMin": 3600,
+    "dpMax": 3600,
+    "phase": "Phase 3 — Spécifique TransLantau",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "1h25 avec 5 × 6 min côte · 153–163, RPE 7–8 · Force montée"
+      ],
+      [
+        "Mercredi",
+        "1h05 EF vallonnée · 143–153, RPE 3–4 · Volume facile"
+      ],
+      [
+        "Jeudi",
+        "1h20 descente technique + relances · RPE 6 musculaire · CX1 quadriceps · Quadriceps"
+      ],
+      [
+        "Vendredi",
+        "Repos ou ZW1 30–40 min · <143, RPE 1–2 · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "4h15–4h30 trail, 1 900–2 100 D+ · 143–153 majoritaire, RPE 5–6 · CX1 quadriceps/mollets · Gros stress contrôlé"
+      ],
+      [
+        "Dimanche",
+        "1h30–1h45 vallonné, 600–800 D+ · 143–153, RPE 4 · CX2 optionnel · Back-to-back"
+      ],
+      [
+        "Objectif ",
+        "gros bloc spécifique, finir fatiguée mais fonctionnelle."
+      ],
+      [
+        "Renforcement ",
+        "1 séance maximum si fatigue normale. Pas d'excentrique lourd ajouté."
+      ],
+      [
+        "Nutrition ",
+        "70–90 g glucides/h sur la sortie longue."
+      ]
+    ]
+  },
+  {
+    "i": 16,
+    "start": "2026-10-05",
+    "dates": "5–11 oct.",
+    "type": "récupération obligatoire",
+    "label": "Récupération obligatoire",
+    "objective": "absorption avant pic",
+    "kmMin": 50,
+    "kmMax": 52,
+    "dpMin": 1400,
+    "dpMax": 1400,
+    "phase": "Phase 3 — Spécifique TransLantau",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX1 ou CX4 · Récupération"
+      ],
+      [
+        "Mardi",
+        "50 min EF · 143–153, RPE 3 · Relance"
+      ],
+      [
+        "Mercredi",
+        "45 min facile ou ZW1 40 min · <143–153, RPE 2–3 · CX2 optionnel · Volume léger"
+      ],
+      [
+        "Jeudi",
+        "1h avec 6 × 1 min côte facile · RPE 5–6 max · Tonicité"
+      ],
+      [
+        "Vendredi",
+        "Repos ou mobilité · RPE 1 · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "1h45–2h trail facile · 143–153, RPE 4 · CX1 quadriceps/mollets · Trail doux"
+      ],
+      [
+        "Dimanche",
+        "40–45 min récupération ou ZW1 · <143, RPE 2–3 · Fraîcheur"
+      ],
+      [
+        "Objectif ",
+        "absorber S15 et préparer S17."
+      ],
+      [
+        "Renforcement ",
+        "1 séance légère maximum."
+      ]
+    ]
+  },
+  {
+    "i": 17,
+    "start": "2026-10-12",
+    "dates": "12–18 oct.",
+    "type": "pic principal",
+    "label": "Pic principal",
+    "objective": "semaine reine",
+    "kmMin": 80,
+    "kmMax": 82,
+    "dpMin": 4200,
+    "dpMax": 4500,
+    "phase": "Phase 3 — Spécifique TransLantau",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX4 optionnel · Préparer le pic"
+      ],
+      [
+        "Mardi",
+        "1h30 côtes longues, 800–900 D+ · 153–163, seuil court possible, RPE 7 · Montée forte"
+      ],
+      [
+        "Mercredi",
+        "1h10 EF vallonnée, 300–400 D+ · 143–153, RPE 3–4 · Volume facile"
+      ],
+      [
+        "Jeudi",
+        "1h20 descente technique + relances, 600–700 D+ · RPE 6 musculaire · CX1 quadriceps · Descente + relance"
+      ],
+      [
+        "Vendredi",
+        "Repos ou ZW1 30 min · <143, RPE 1–2 · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Samedi",
+        "4h45–5h15 trail, 2 200–2 500 D+ · 143–153 majoritaire, RPE 5–6 · CX1 quadriceps/mollets · Répétition générale"
+      ],
+      [
+        "Dimanche",
+        "1h30–1h45 rando-course, 600–800 D+ · 143–153, RPE 4 · CX1 ou CX2 · Back-to-back contrôlé"
+      ],
+      [
+        "Objectif ",
+        "répétition générale TransLantau. Semaine clé du plan."
+      ],
+      [
+        "Point clé",
+        "marcher fort en montée ;"
+      ],
+      [
+        "Point clé",
+        "descendre fluide sans subir les quadriceps ;"
+      ],
+      [
+        "Point clé",
+        "relancer sans crampe ;"
+      ],
+      [
+        "Point clé",
+        "tester nutrition complète ;"
+      ],
+      [
+        "Point clé",
+        "valider sac, chaussures, flasques, bâtons si utilisés ;"
+      ],
+      [
+        "Point clé",
+        "rester fonctionnelle le dimanche."
+      ],
+      [
+        "Nutrition ",
+        "70–90 g glucides/h."
+      ],
+      [
+        "Renforcement ",
+        "pas de renfo jambes lourd."
+      ],
+      [
+        "Compex ",
+        "récupération uniquement."
+      ]
+    ]
+  },
+  {
+    "i": 18,
+    "start": "2026-10-19",
+    "dates": "19–25 oct.",
+    "type": "consolidation modulable",
+    "label": "Consolidation modulable",
+    "objective": "consolider selon récupération",
+    "kmMin": 50,
+    "kmMax": 72,
+    "dpMin": 1500,
+    "dpMax": 3300,
+    "phase": "Phase 3 — Spécifique TransLantau",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos complet · CX1 ou CX4 · Absorption"
+      ],
+      [
+        "Mardi",
+        "4 × 10 min montée Z3 · 153–163, RPE 7 · Consolidation montée"
+      ],
+      [
+        "Mercredi",
+        "1h EF · 143–153, RPE 3–4 · Volume facile"
+      ],
+      [
+        "Jeudi",
+        "1h15 descente + relances · RPE 5–6 · CX1 quadriceps · Qualité descente"
+      ],
+      [
+        "Vendredi",
+        "Repos ou ZW1 30–40 min · <143 · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "3h30–4h trail, 1 500–1 800 D+ · RPE 5 · CX1 quadriceps/mollets · Dernier gros spécifique"
+      ],
+      [
+        "Dimanche",
+        "1h10–1h20 récupération vallonnée · RPE 3 · CX2 optionnel · Absorption"
+      ],
+      [
+        "Très bonne récupération",
+        "68–72 km / 3 000–3 300 D+"
+      ],
+      [
+        "Fatigue normale",
+        "60–65 km / 2 300–2 700 D+"
+      ],
+      [
+        "Fatigue musculaire nette",
+        "50–55 km / 1 500–2 000 D+"
+      ],
+      [
+        "Quadriceps touchés",
+        "pas de descente technique, Zwift Z1/EF possible"
+      ],
+      [
+        "Objectif ",
+        "consolider, pas refaire S17. Cette semaine est pilotée par la récupération réelle."
+      ],
+      [
+        "Point clé",
+        "Mardi : 50–60 min EF vallonnée, pas de blocs longs."
+      ],
+      [
+        "Point clé",
+        "Mercredi : ZW1 ou ZW2 40–50 min."
+      ],
+      [
+        "Point clé",
+        "Jeudi : 45–60 min technique facile, pas de descente engagée."
+      ],
+      [
+        "Point clé",
+        "Samedi : 2h15–3h trail, 900–1 300 D+."
+      ],
+      [
+        "Point clé",
+        "Dimanche : repos, marche ou ZW1."
+      ],
+      [
+        "Renforcement ",
+        "0 à 1 séance très légère."
+      ],
+      [
+        "Compex ",
+        "récupération uniquement."
+      ]
+    ]
+  },
+  {
+    "i": 19,
+    "start": "2026-10-26",
+    "dates": "26 oct.–1 nov.",
+    "type": "affûtage 1",
+    "label": "Affûtage 1",
+    "objective": "baisse fatigue",
+    "kmMin": 48,
+    "kmMax": 52,
+    "dpMin": 1400,
+    "dpMax": 1600,
+    "phase": "Phase 4 — Affûtage & race",
+    "sessionsPlanned": 5,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Mardi",
+        "3 × 8 min Z3 terrain vallonné · 153–163, RPE 6 · Rythme"
+      ],
+      [
+        "Mercredi",
+        "50 min EF · 143–153, RPE 3 · Volume léger"
+      ],
+      [
+        "Jeudi",
+        "8 × 1 min côte, récup complète · RPE 6–7 · CX1 léger si besoin · Tonicité"
+      ],
+      [
+        "Vendredi",
+        "Repos ou ZW1 30 min · <143 · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "2h15–2h30 trail facile · 143–153, RPE 4 · CX1 quadriceps/mollets · Dernière sortie moyenne"
+      ],
+      [
+        "Dimanche",
+        "40–45 min récupération ou repos · <143, RPE 2–3 · Fraîcheur"
+      ],
+      [
+        "Objectif ",
+        "faire baisser la fatigue tout en gardant du rythme."
+      ],
+      [
+        "Renforcement ",
+        "1 séance très légère, gainage/mobilité uniquement."
+      ]
+    ]
+  },
+  {
+    "i": 20,
+    "start": "2026-11-02",
+    "dates": "2–8 nov.",
+    "type": "affûtage 2",
+    "label": "Affûtage 2",
+    "objective": "fraîcheur",
+    "kmMin": 32,
+    "kmMax": 36,
+    "dpMin": 700,
+    "dpMax": 900,
+    "phase": "Phase 4 — Affûtage & race",
+    "sessionsPlanned": 4,
+    "race": null,
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
+        "Mardi",
+        "45 min EF + 6 lignes droites · 143–153, RPE 3–5 · Activation"
+      ],
+      [
+        "Mercredi",
+        "Repos ou ZW1 30 min · <143 · CX4 optionnel · Récupération"
+      ],
+      [
+        "Jeudi",
+        "35–40 min avec 5 × 1 min côte · RPE 5–6 · Tension musculaire"
+      ],
+      [
+        "Vendredi",
+        "Repos · pas de Compex fort · Fraîcheur"
+      ],
+      [
+        "Samedi",
+        "1h20–1h30 trail facile · 143–153, RPE 3–4 · CX1 léger si besoin · Dernière sortie trail"
+      ],
+      [
+        "Dimanche",
+        "35 min récupération ou repos · <143, RPE 2 · Fraîcheur"
+      ],
+      [
+        "Objectif ",
+        "fraîcheur, tonicité, zéro dette."
+      ],
+      [
+        "Renforcement ",
+        "mobilité + gainage léger uniquement."
+      ]
+    ]
+  },
+  {
+    "i": 21,
+    "start": "2026-11-09",
+    "dates": "9–14 nov.",
+    "type": "race week",
+    "label": "Race week",
+    "objective": "activation + course",
+    "kmMin": 18,
+    "kmMax": 22,
+    "dpMin": 200,
+    "dpMax": 400,
+    "phase": "Phase 4 — Affûtage & race",
+    "sessionsPlanned": 4,
+    "race": "TransLantau50",
+    "seances": [
+      [
+        "Lundi",
+        "Repos · CX4 optionnel · Fraîcheur"
+      ],
+      [
+        "Mardi",
+        "40 min EF + 5 lignes droites · 143–153, RPE 3–5 · Activation"
+      ],
+      [
+        "Mercredi",
+        "30–35 min facile · <143–153, RPE 2–3 · CX4 optionnel · Déverrouillage"
+      ],
+      [
+        "Jeudi",
+        "Repos / voyage / mobilité · RPE 1 · pas de Compex nouveau · Préserver"
+      ],
+      [
+        "Vendredi",
+        "20 min shake-out si besoin · RPE 2–3 · rien ou CX4 très léger · Tension légère"
+      ],
+      [
+        "Samedi",
+        "TransLantau50 · Course objectif · CX1 après course si disponible · Performance"
+      ],
+      [
+        "Objectif ",
+        "arriver avec de la tension musculaire, mais aucune fatigue."
+      ],
+      [
+        "Race week ",
+        "pas de nouveauté nutrition, matériel, chaussures, Compex ou Zwift."
+      ]
+    ]
+  }
+];
+  const WEEK_START_DATES = PLAN.map(w => w.start);
+  const PHASES = [
+  {
+    "id": "s0",
+    "label": "S0",
+    "name": "Reprise post-course",
+    "from": 0,
+    "to": 0
+  },
+  {
+    "id": "p1",
+    "label": "Phase 1",
+    "name": "Base + assimilation pré-6D",
+    "from": 1,
+    "to": 5
+  },
+  {
+    "id": "p2",
+    "label": "Phase 2",
+    "name": "6D, montagne & courses secondaires",
+    "from": 6,
+    "to": 13
+  },
+  {
+    "id": "p3",
+    "label": "Phase 3",
+    "name": "Spécifique TransLantau",
+    "from": 14,
+    "to": 18
+  },
+  {
+    "id": "p4",
+    "label": "Phase 4",
+    "name": "Affûtage + race",
+    "from": 19,
+    "to": 21
+  }
+];
+
+  let weekData = loadJSON(STORAGE.weeks, {});
+  let radarStore = loadJSON(STORAGE.radar, null) || {current: defaultRadar(), previous:null, savedAt:null};
+  let journal = loadJSON(STORAGE.journal, []);
+  let freshnessStore = loadJSON(STORAGE.freshness, {weeks:{}, nutritionStatusOverride:null});
+  let volumeChart, atlCtlChart, radarChart;
+  let activeWeekIndex = 0;
+  let drawerWeekIndex = null;
+  let inlineWeekIndex = null;
+  let mantraIndex = Math.floor(Math.random() * MANTRAS.length);
+  let quoteIndex = 0;
+
+  function defaultRadar(){return Object.fromEntries(QUALITIES.map(q => [q, 5]));}
+  function loadJSON(key, fallback){
+    try{const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback;}catch(e){return fallback;}
+  }
+  function saveJSON(key, value){localStorage.setItem(key, JSON.stringify(value));}
+  function byId(id){return document.getElementById(id);}
+  function parseDate(dateStr){return new Date(`${dateStr}T00:00:00`);}
+  function raceDate(key){return new Date(RACES[key].date);}
+  function fmt(n, digits=0){return Number.isFinite(n) ? n.toLocaleString('fr-FR',{maximumFractionDigits:digits,minimumFractionDigits:digits}) : '--';}
+  function fmtMaybe(n, digits=0){return Number.isFinite(n) ? fmt(n,digits) : '—';}
+  function weekKmTarget(w){return (w.kmMin + w.kmMax) / 2;}
+  function weekDpTarget(w){return (w.dpMin + w.dpMax) / 2;}
+  function weekEnd(w){return new Date(parseDate(w.start).getTime() + 7 * MS_DAY);}
+  function daysUntil(date){return Math.ceil((date.getTime() - Date.now()) / MS_DAY);}
+  function clamp(n,min,max){return Math.max(min, Math.min(max, n));}
+  function slugType(type){return 'type-' + type.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'-');}
+  function statusForWeek(w){
+    const now = new Date();
+    const start = parseDate(w.start);
+    const end = weekEnd(w);
+    if(end < now) return 'passed';
+    if(start > now) return 'future';
+    return 'active';
+  }
+  function statusLabel(status){return status === 'passed' ? '✓ Réalisée' : status === 'active' ? '→ En cours' : '○ À venir';}
+  function detectActiveWeek(){
+    const now = new Date();
+    let idx = 0;
+    PLAN.forEach((w,i) => { if(parseDate(w.start) <= now) idx = i; });
+    return clamp(idx, 0, PLAN.length - 1);
+  }
+  function getPhaseForWeek(i){return PHASES.find(p => i >= p.from && i <= p.to) || PHASES[0];}
+  function sumPlanKm(range = PLAN){return range.reduce((s,w) => s + weekKmTarget(w), 0);}
+  function sumPlanDp(range = PLAN){return range.reduce((s,w) => s + weekDpTarget(w), 0);}
+  function sumSessions(range = PLAN){return range.reduce((s,w) => s + w.sessionsPlanned, 0);}
+  function weekActual(i){return weekData[String(i)] || {};}
+  function num(v){const n = Number(v); return Number.isFinite(n) ? n : 0;}
+  function hasWeekEntry(i){const d = weekActual(i); return d && (d.kmReel !== undefined || d.dpReel !== undefined || d.seancesRealisees !== undefined || d.notes);}
+  function enteredWeeks(){return PLAN.filter(w => hasWeekEntry(w.i) && Number(weekActual(w.i).kmReel) > 0);}
+  function actualKmTotal(range = PLAN){return range.reduce((s,w) => s + num(weekActual(w.i).kmReel), 0);}
+  function actualDpTotal(range = PLAN){return range.reduce((s,w) => s + num(weekActual(w.i).dpReel), 0);}
+  function actualSessionsTotal(range = PLAN){return range.reduce((s,w) => s + num(weekActual(w.i).seancesRealisees), 0);}
+  function pct(actual, planned){return planned > 0 ? (actual / planned) * 100 : 0;}
+  function weekRangeText(min,max,suffix=''){return min === max ? `${fmt(min)}${suffix}` : `${fmt(min)}–${fmt(max)}${suffix}`;}
+  function signedPct(actual, planned){return planned > 0 ? ((actual - planned) / planned) * 100 : 0;}
+  function gapClass(gap){
+    if(gap < -20) return 'red';
+    if(gap < -10 || gap > 10) return 'orange';
+    return 'green';
+  }
+  function colorByRatio(r){
+    if(!Number.isFinite(r)) return 'gray';
+    if(r > 1.5 || r < 0.5) return 'red';
+    if(r >= 0.8 && r <= 1.3) return 'green';
+    return 'orange';
+  }
+  function freshnessColor(v){return v >= 7 ? 'green' : v >= 4 ? 'orange' : 'red';}
+  function typeColor(type){
+    const t = type.toLowerCase();
+    if(t.includes('récup') || t.includes('absorption')) return getCSS('--green');
+    if(t.includes('pic') || t.includes('bloc haute montagne')) return getCSS('--blue');
+    if(t.includes('affût') || t.includes('affut')) return getCSS('--light-gray');
+    if(t.includes('course') || t.includes('race')) return getCSS('--orange-bright');
+    return getCSS('--orange');
+  }
+  function getCSS(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim();}
+
+  function init(){
+    activeWeekIndex = detectActiveWeek();
+    initMantras();
+    initCountdowns();
+    initJournalForm();
+    initNutrition();
+    bindGlobalEvents();
+    renderAll();
+    setInterval(updateCountdowns, 1000);
+    setInterval(rotateMantra, 30000);
+  }
+
+  function initMantras(){
+    byId('heroMantra').textContent = MANTRAS[mantraIndex];
+  }
+  function rotateMantra(){
+    const node = byId('heroMantra');
+    node.classList.add('fade');
+    setTimeout(() => {
+      mantraIndex = (mantraIndex + 1) % MANTRAS.length;
+      node.textContent = MANTRAS[mantraIndex];
+      node.classList.remove('fade');
+    }, 620);
+  }
+  function updateCountdowns(){
+    const main = raceDate('main').getTime();
+    const now = Date.now();
+    let diff = Math.max(0, main - now);
+    const days = Math.floor(diff / MS_DAY); diff -= days * MS_DAY;
+    const hours = Math.floor(diff / (60*60*1000)); diff -= hours * 60*60*1000;
+    const minutes = Math.floor(diff / (60*1000)); diff -= minutes * 60*1000;
+    const seconds = Math.floor(diff / 1000);
+    byId('cdDays').textContent = fmt(days);
+    byId('cdHours').textContent = String(hours).padStart(2,'0');
+    byId('cdMinutes').textContent = String(minutes).padStart(2,'0');
+    byId('cdSeconds').textContent = String(seconds).padStart(2,'0');
+    updateMiniRace('sixd', 'sixdCounter', 'sixdDays');
+    updateMiniRace('luzitrail', 'luzitrailCounter', 'luzitrailDays');
+    updateMiniRace('dolmens', 'dolmensCounter', 'dolmensDays');
+  }
+  function updateMiniRace(key, wrapId, daysId){
+    const d = raceDate(key);
+    const days = daysUntil(d);
+    const wrap = byId(wrapId);
+    if(days < 0){ wrap.classList.add('hidden'); return; }
+    wrap.classList.remove('hidden');
+    byId(daysId).textContent = fmt(days);
+  }
+  function initCountdowns(){updateCountdowns();}
+
+  function bindGlobalEvents(){
+    byId('toggleDp').addEventListener('change', renderCharts);
+    byId('inlineSave').addEventListener('click', saveInlineWeek);
+    byId('inlineClose').addEventListener('click', () => byId('inlineWeekEditor').classList.remove('active'));
+    byId('drawerClose').addEventListener('click', closeDrawer);
+    byId('drawerBackdrop').addEventListener('click', closeDrawer);
+    byId('drawerSave').addEventListener('click', saveDrawerWeek);
+    byId('drawerDelete').addEventListener('click', deleteDrawerWeek);
+    byId('freshnessSlider').addEventListener('input', e => {
+      const score = Number(e.target.value);
+      if(!freshnessStore.weeks) freshnessStore.weeks = {};
+      freshnessStore.weeks[String(activeWeekIndex)] = score;
+      freshnessStore.updatedAt = new Date().toISOString();
+      saveJSON(STORAGE.freshness, freshnessStore);
+      renderFreshness();
+    });
+    byId('nutritionStatus').addEventListener('change', e => {
+      freshnessStore.nutritionStatusOverride = e.target.value || null;
+      saveJSON(STORAGE.freshness, freshnessStore);
+      renderNutrition();
+    });
+    byId('resetDemoBtn').addEventListener('click', () => {
+      if(confirm('Supprimer les données locales de suivi TL50 ?')){
+        [STORAGE.weeks, STORAGE.journal, STORAGE.freshness].forEach(k => localStorage.removeItem(k));
+        location.reload();
+      }
+    });
+  }
+
+  function renderAll(){
+    activeWeekIndex = detectActiveWeek();
+    renderHeroContext();
+    renderDashboard();
+    renderCharts();
+    renderTimeline();
+    renderBlocks();
+    renderJournal();
+    renderFooter();
+    renderSideProgress();
+  }
+
+  function renderHeroContext(){
+    const w = PLAN[activeWeekIndex];
+    const p = getPhaseForWeek(activeWeekIndex);
+    byId('heroActiveWeek').textContent = `S${w.i}`;
+    byId('heroActivePhase').textContent = `${w.label} · ${p.label} — ${p.name}`;
+  }
+
+  function renderSideProgress(){
+    const pctDone = ((activeWeekIndex + 1) / PLAN.length) * 100;
+    const fill = byId('sideProgressFill');
+    fill.style.height = `${clamp(pctDone,0,100)}%`;
+    fill.style.background = `linear-gradient(0deg, ${typeColor(PLAN[activeWeekIndex].type)}, ${getCSS('--blue')})`;
+    fill.classList.toggle('race', PLAN[activeWeekIndex].type.includes('race'));
+  }
+
+  function renderDashboard(){
+    renderTopKpis();
+    renderTotalsKpis();
+    renderCurrentWeekKpis();
+    renderFreshness();
+    renderNutrition();
+    renderProjectionAndLoad();
+    renderAlerts();
+  }
+
+  function renderTopKpis(){
+    const w = PLAN[activeWeekIndex];
+    const p = getPhaseForWeek(activeWeekIndex);
+    byId('kpiWeek').textContent = `S${w.i}`;
+    byId('kpiWeekStatus').textContent = `${w.label} · ${w.dates} · ${statusLabel(statusForWeek(w))}`;
+    byId('kpiPhase').textContent = p.label;
+    byId('kpiPhaseDetail').textContent = `${p.name} · S${p.from} à S${p.to}`;
+    const daysMain = Math.max(0, daysUntil(raceDate('main')));
+    byId('kpiDaysMain').textContent = fmt(daysMain);
+    byId('kpiWeeksMain').textContent = fmt(Math.max(0, Math.ceil(daysMain / 7)));
+    const secParts = [];
+    ['sixd','luzitrail','dolmens'].forEach(k => {
+      const d = daysUntil(raceDate(k));
+      if(d >= 0) secParts.push(`<div class="row"><span>${RACES[k].name}</span><strong>${fmt(d)} j</strong></div>`);
+    });
+    byId('kpiSecondary').innerHTML = secParts.length ? secParts.join('') : '<span class="muted">Courses secondaires passées.</span>';
+  }
+
+  function renderTotalsKpis(){
+    const planKm = sumPlanKm();
+    const planDp = sumPlanDp();
+    const planSessions = sumSessions();
+    const actualKm = actualKmTotal();
+    const actualDp = actualDpTotal();
+    const actualSessions = actualSessionsTotal();
+    setKpiProgress('kpiKmTotal','barKmTotal','detailKmTotal',actualKm,planKm,'km');
+    setKpiProgress('kpiDpTotal','barDpTotal','detailDpTotal',actualDp,planDp,'m D+');
+    setKpiProgress('kpiSessionsTotal','barSessionsTotal','detailSessionsTotal',actualSessions,planSessions,'séances');
+
+    const elapsedWeeks = PLAN.filter(w => parseDate(w.start) <= new Date());
+    const planKmToDate = sumPlanKm(elapsedWeeks);
+    const planDpToDate = sumPlanDp(elapsedWeeks);
+    const actualKmToDate = actualKmTotal(elapsedWeeks);
+    const actualDpToDate = actualDpTotal(elapsedWeeks);
+    renderGap('kpiKmGap','kpiKmGapDetail',actualKmToDate,planKmToDate,'km');
+    renderGap('kpiDpGap','kpiDpGapDetail',actualDpToDate,planDpToDate,'m D+');
+  }
+  function setKpiProgress(valueId, barId, detailId, actual, planned, unit){
+    const p = pct(actual, planned);
+    byId(valueId).textContent = `${fmt(actual, unit==='km'?1:0)} / ${fmt(planned, unit==='km'?1:0)}`;
+    byId(barId).style.width = `${clamp(p,0,120)}%`;
+    byId(detailId).textContent = `${fmt(p,1)} % du plan total · unité : ${unit}`;
+  }
+  function renderGap(valueId, detailId, actual, planned, unit){
+    const gap = signedPct(actual, planned);
+    const klass = gapClass(gap);
+    const el = byId(valueId);
+    el.textContent = `${gap >= 0 ? '+' : ''}${fmt(gap,1)} %`;
+    el.style.color = getCSS(`--${klass === 'gray' ? 'muted' : klass}`) || getCSS('--muted');
+    byId(detailId).innerHTML = `${fmt(actual, unit==='km'?1:0)} / ${fmt(planned, unit==='km'?1:0)} ${unit} cumulés à date · <span class="pill ${klass}">${klass.toUpperCase()}</span>`;
+  }
+
+  function renderCurrentWeekKpis(){
+    const w = PLAN[activeWeekIndex];
+    const d = weekActual(w.i);
+    byId('kpiKmWeek').textContent = `${fmtMaybe(num(d.kmReel),1)} / ${weekRangeText(w.kmMin,w.kmMax,' km')}`;
+    byId('detailKmWeek').textContent = `Cible moyenne : ${fmt(weekKmTarget(w),1)} km`;
+    byId('kpiDpWeek').textContent = `${fmtMaybe(num(d.dpReel),0)} / ${weekRangeText(w.dpMin,w.dpMax,' m')}`;
+    byId('detailDpWeek').textContent = `Cible moyenne : ${fmt(weekDpTarget(w),0)} m D+`;
+    byId('kpiSessionsWeek').textContent = `${fmtMaybe(num(d.seancesRealisees),0)} / ${w.sessionsPlanned}`;
+    byId('detailSessionsWeek').textContent = `${w.label} · ${w.objective}`;
+  }
+
+  function renderFreshness(){
+    const value = freshnessStore.weeks && freshnessStore.weeks[String(activeWeekIndex)] ? Number(freshnessStore.weeks[String(activeWeekIndex)]) : 7;
+    const color = freshnessColor(value);
+    const slider = byId('freshnessSlider');
+    slider.value = value;
+    slider.style.accentColor = getCSS(`--${color}`);
+    const pill = byId('freshnessValue');
+    pill.textContent = `${value}/10`;
+    pill.className = `pill ${color}`;
+  }
+  function initNutrition(){
+    const select = byId('nutritionStatus');
+    select.innerHTML = ['Auto','À tester','En cours de validation','Validée ?'].map(v => `<option value="${v === 'Auto' ? '' : v}">${v}</option>`).join('');
+  }
+  function autoNutritionStatus(){
+    if(activeWeekIndex < 8) return 'À tester';
+    if(activeWeekIndex <= 16) return 'En cours de validation';
+    return 'Validée ?';
+  }
+  function renderNutrition(){
+    const auto = autoNutritionStatus();
+    const selected = freshnessStore.nutritionStatusOverride || '';
+    byId('nutritionStatus').value = selected;
+    byId('nutritionDetail').innerHTML = selected ? `Statut manuel : <span class="pill orange">${selected}</span>` : `Statut auto : <span class="pill blue">${auto}</span>`;
+  }
+
+  function getLoadMetrics(){
+    const currentKm = num(weekActual(activeWeekIndex).kmReel);
+    const previousEntered = [];
+    for(let i = activeWeekIndex - 1; i >= 0; i--){
+      const k = Number(weekActual(i).kmReel);
+      if(Number.isFinite(k) && k > 0) previousEntered.unshift(k);
+      if(previousEntered.length >= 4) break;
+    }
+    const lastFour = previousEntered.slice(-4);
+    const ctl = lastFour.length ? lastFour.reduce((a,b)=>a+b,0) / lastFour.length : NaN;
+    const ratio = Number.isFinite(ctl) && ctl > 0 && currentKm > 0 ? currentKm / ctl : NaN;
+    return {atl: currentKm, ctl, ratio, n:lastFour.length};
+  }
+  function renderProjectionAndLoad(){
+    const entered = enteredWeeks();
+    const actualKm = actualKmTotal();
+    const actualDp = actualDpTotal();
+    const avgKm = entered.length ? actualKm / entered.length : 0;
+    const avgDp = entered.length ? actualDp / entered.length : 0;
+    const remainingWeeks = PLAN.filter(w => parseDate(w.start) > new Date() && w.i <= RACES.main.week).length;
+    const projectedKm = actualKm + avgKm * remainingWeeks;
+    const projectedDp = actualDp + avgDp * remainingWeeks;
+    byId('projectionKm').textContent = entered.length ? `${fmt(projectedKm,1)} km` : '—';
+    byId('projectionKmDetail').textContent = entered.length ? `Moyenne saisie : ${fmt(avgKm,1)} km/sem · ${remainingWeeks} semaines restantes` : 'Projection disponible après au moins une semaine saisie.';
+    byId('projectionDp').textContent = entered.length ? `${fmt(projectedDp,0)} m` : '—';
+    byId('projectionDpDetail').textContent = entered.length ? `Moyenne saisie : ${fmt(avgDp,0)} m D+/sem · ${remainingWeeks} semaines restantes` : 'Projection disponible après au moins une semaine saisie.';
+    const {atl,ctl,ratio,n} = getLoadMetrics();
+    const color = colorByRatio(ratio);
+    byId('kpiAtlCtl').textContent = Number.isFinite(ratio) ? fmt(ratio,2) : '—';
+    byId('kpiAtlCtl').style.color = color === 'gray' ? getCSS('--muted') : getCSS(`--${color}`);
+    byId('kpiAtlCtlDetail').textContent = Number.isFinite(ratio) ? `ATL ${fmt(atl,1)} km · CTL ${fmt(ctl,1)} km · ${n} semaines` : 'Ratio disponible après saisie de la semaine active et de semaines précédentes.';
+    const bar = byId('barAtlCtl');
+    bar.className = `progress-bar ${color}`;
+    bar.style.width = Number.isFinite(ratio) ? `${clamp((ratio/1.6)*100,0,100)}%` : '0%';
+  }
+
+  function renderAlerts(){
+    const alerts = [];
+    const w = PLAN[activeWeekIndex];
+    const d = weekActual(activeWeekIndex);
+    if((w.type.includes('récup') || w.type.includes('absorption')) && num(d.kmReel) > w.kmMax * 1.1){
+      alerts.push({color:'red',text:`Semaine de récupération/absorption : volume saisi à ${fmt(num(d.kmReel),1)} km, au-dessus de 110 % de la cible max (${fmt(w.kmMax * 1.1,1)} km). Réduire la charge.`});
+    }
+    const lastUpdate = Object.values(weekData).map(x => x && x.updatedAt ? new Date(x.updatedAt).getTime() : 0).filter(Boolean).sort((a,b)=>b-a)[0];
+    if(!lastUpdate || Date.now() - lastUpdate > 14 * MS_DAY){
+      alerts.push({color:'orange',text:'Pense à saisir tes données : aucune saisie semaine détectée depuis 2 semaines.'});
+    }
+    const {ratio} = getLoadMetrics();
+    if(Number.isFinite(ratio)){
+      const c = colorByRatio(ratio);
+      if(c === 'red') alerts.push({color:'red',text:`Ratio ATL/CTL à ${fmt(ratio,2)} : zone rouge. Risque de surcharge ou désentraînement selon direction.`});
+      else if(c === 'orange') alerts.push({color:'orange',text:`Ratio ATL/CTL à ${fmt(ratio,2)} : hors zone verte 0.8–1.3. Ajuster sans casser la progression.`});
+    }
+    if(!alerts.length) alerts.push({color:'green',text:'Aucune alerte critique avec les données actuellement saisies.'});
+    byId('alerts').innerHTML = alerts.map(a => `<div class="alert ${a.color}">${a.text}</div>`).join('');
+  }
+
+  function phaseRange(p){return PLAN.slice(p.from, p.to + 1);}
+  function phaseStatus(p){
+    const now = new Date();
+    if(weekEnd(PLAN[p.to]) < now) return 'Terminée';
+    if(parseDate(PLAN[p.from].start) > now) return 'À venir';
+    return 'En cours';
+  }
+  function phaseCardHTML(p, compact=false){
+    const range = phaseRange(p);
+    const planKm = sumPlanKm(range), planDp = sumPlanDp(range);
+    const actualKm = actualKmTotal(range), actualDp = actualDpTotal(range);
+    const completion = pct(actualKm, planKm);
+    const status = phaseStatus(p);
+    const color = status === 'Terminée' ? 'green' : status === 'En cours' ? 'orange' : 'gray';
+    return `<div class="phase-card">
+      <h3>${p.label}</h3><small>${p.name} · S${p.from}–S${p.to}</small>
+      <div class="row"><span>Statut</span><strong><span class="pill ${color}">${status === 'Terminée' ? '✓ Terminée' : status}</span></strong></div>
+      <div class="row"><span>Km</span><strong>${fmt(actualKm,1)} / ${fmt(planKm,1)}</strong></div>
+      <div class="row"><span>D+</span><strong>${fmt(actualDp,0)} / ${fmt(planDp,0)}</strong></div>
+      <div class="progress-wrap"><div class="progress-bar ${color}" style="width:${clamp(completion,0,100)}%"></div></div>
+      <div class="kpi-detail">${fmt(completion,1)} % complétion km${compact ? '' : ` · écart ${fmt(signedPct(actualKm,planKm),1)} %`}</div>
+    </div>`;
+  }
+
+  const volumeBackgroundPlugin = {
+    id:'tl50VolumeBackground',
+    beforeDatasetsDraw(chart,args,opts){
+      const {ctx, chartArea, scales} = chart;
+      if(!chartArea || !scales.x) return;
+      const x = scales.x;
+      PLAN.forEach((w,i) => {
+        const xCenter = x.getPixelForValue(i);
+        const prev = i === 0 ? x.left : (x.getPixelForValue(i-1) + xCenter) / 2;
+        const next = i === PLAN.length-1 ? x.right : (xCenter + x.getPixelForValue(i+1)) / 2;
+        let fill = null;
+        if(w.type.includes('récup') || w.type.includes('absorption')) fill = 'rgba(29,179,122,.10)';
+        if(w.type.includes('pic') || w.type.includes('bloc haute montagne')) fill = 'rgba(46,143,224,.12)';
+        if(w.type.includes('affût')) fill = 'rgba(210,215,224,.08)';
+        if(fill){ctx.save();ctx.fillStyle = fill;ctx.fillRect(prev,chartArea.top,next-prev,chartArea.bottom-chartArea.top);ctx.restore();}
+      });
+    },
+    afterDatasetsDraw(chart,args,opts){
+      const {ctx, chartArea, scales} = chart;
+      if(!chartArea || !scales.x) return;
+      const events = [{i:6,label:'6D'}, {i:11,label:'Luzi'}, {i:12,label:'Dolmens'}, {i:21,label:'TL50'}];
+      events.forEach(e => {
+        const x = scales.x.getPixelForValue(e.i);
+        ctx.save();
+        ctx.strokeStyle = getCSS('--orange-bright');
+        ctx.lineWidth = e.i === 21 ? 2 : 1.5;
+        ctx.setLineDash([5,5]);
+        ctx.beginPath();ctx.moveTo(x,chartArea.top);ctx.lineTo(x,chartArea.bottom);ctx.stroke();
+        ctx.setLineDash([]);ctx.fillStyle = getCSS('--orange-bright');ctx.font = '700 11px Inter';
+        ctx.fillText(e.label, x + 4, chartArea.top + 14);ctx.restore();
+      });
+    }
+  };
+  const ratioZonesPlugin = {
+    id:'tl50RatioZones',
+    beforeDatasetsDraw(chart){
+      const {ctx, chartArea, scales} = chart;
+      if(!chartArea || !scales.y) return;
+      const y = scales.y;
+      const zones = [
+        {from:0,to:.5,color:'rgba(232,58,42,.12)'},
+        {from:.5,to:.8,color:'rgba(232,98,42,.10)'},
+        {from:.8,to:1.3,color:'rgba(29,179,122,.13)'},
+        {from:1.3,to:1.5,color:'rgba(232,98,42,.10)'},
+        {from:1.5,to:2,color:'rgba(232,58,42,.12)'}
+      ];
+      zones.forEach(z => {
+        const y1 = y.getPixelForValue(z.from), y2 = y.getPixelForValue(z.to);
+        ctx.save();ctx.fillStyle = z.color;ctx.fillRect(chartArea.left, y2, chartArea.right-chartArea.left, y1-y2);ctx.restore();
+      });
+    }
+  };
+
+  function renderCharts(){
+    if(typeof Chart === 'undefined') return;
+    const labels = PLAN.map(w => `S${w.i}`);
+    const targetKm = PLAN.map(weekKmTarget);
+    const actualKm = PLAN.map(w => hasWeekEntry(w.i) ? Number(weekActual(w.i).kmReel || 0) : null);
+    const targetDp = PLAN.map(weekDpTarget);
+    const actualDp = PLAN.map(w => hasWeekEntry(w.i) ? Number(weekActual(w.i).dpReel || 0) : null);
+    const showDp = byId('toggleDp').checked;
+    const volumeData = {
+      labels,
+      datasets:[
+        {label:'Km cible moyen',data:targetKm,borderColor:'rgba(210,215,224,.78)',borderDash:[8,6],backgroundColor:'transparent',tension:.28,pointRadius:3,yAxisID:'y'},
+        {label:'Km réel saisi',data:actualKm,borderColor:getCSS('--orange'),backgroundColor:getCSS('--orange'),tension:.28,pointRadius:5,spanGaps:false,yAxisID:'y'},
+        {label:'D+ cible moyen',data:targetDp,borderColor:'rgba(46,143,224,.35)',borderDash:[3,4],backgroundColor:'transparent',tension:.25,pointRadius:0,hidden:!showDp,yAxisID:'yDp'},
+        {label:'D+ réel saisi',data:actualDp,borderColor:getCSS('--blue'),backgroundColor:getCSS('--blue'),tension:.25,pointRadius:4,hidden:!showDp,spanGaps:false,yAxisID:'yDp'}
+      ]
+    };
+    const volumeOptions = {
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'nearest',intersect:true},
+      plugins:{legend:{labels:{color:getCSS('--light-gray'),boxWidth:14}},tooltip:{callbacks:{label:(ctx)=>`${ctx.dataset.label}: ${fmt(ctx.parsed.y, ctx.dataset.yAxisID==='y'?1:0)}${ctx.dataset.yAxisID==='y'?' km':' m D+'}`}}},
+      scales:{
+        x:{ticks:{color:getCSS('--muted')},grid:{color:'rgba(255,255,255,.06)'}},
+        y:{position:'left',title:{display:true,text:'km/semaine',color:getCSS('--muted')},ticks:{color:getCSS('--muted')},grid:{color:'rgba(255,255,255,.06)'},min:0},
+        yDp:{position:'right',title:{display:showDp,text:'D+ m',color:getCSS('--blue')},ticks:{color:getCSS('--muted')},grid:{drawOnChartArea:false},display:showDp,min:0}
+      },
+      onClick:(event) => {
+        const points = volumeChart.getElementsAtEventForMode(event,'nearest',{intersect:true},true);
+        if(points.length){
+          const i = points[0].index;
+          if(statusForWeek(PLAN[i]) !== 'future') openInlineEditor(i);
+        }
+      }
+    };
+    if(volumeChart){volumeChart.data = volumeData; volumeChart.options = volumeOptions; volumeChart.update();}
+    else volumeChart = new Chart(byId('volumeChart'),{type:'line',data:volumeData,options:volumeOptions,plugins:[volumeBackgroundPlugin]});
+
+    const ratios = computeRatioSeries();
+    const ratioData = {labels,datasets:[{label:'ATL/CTL',data:ratios,borderColor:getCSS('--orange'),backgroundColor:getCSS('--orange'),tension:.28,pointRadius:4,spanGaps:false}]};
+    const ratioOptions = {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:getCSS('--light-gray')}}},scales:{x:{ticks:{color:getCSS('--muted')},grid:{color:'rgba(255,255,255,.06)'}},y:{min:0,max:2,ticks:{color:getCSS('--muted')},grid:{color:'rgba(255,255,255,.06)'}}}};
+    if(atlCtlChart){atlCtlChart.data = ratioData; atlCtlChart.options = ratioOptions; atlCtlChart.update();}
+    else atlCtlChart = new Chart(byId('atlCtlChart'),{type:'line',data:ratioData,options:ratioOptions,plugins:[ratioZonesPlugin]});
+  }
+  function computeRatioSeries(){
+    return PLAN.map((w,i) => {
+      const k = Number(weekActual(i).kmReel);
+      if(!Number.isFinite(k) || k <= 0) return null;
+      const prev = [];
+      for(let j=i-1; j>=0; j--){
+        const pj = Number(weekActual(j).kmReel);
+        if(Number.isFinite(pj) && pj > 0) prev.unshift(pj);
+        if(prev.length >= 4) break;
+      }
+      if(!prev.length) return null;
+      const ctl = prev.reduce((a,b)=>a+b,0) / prev.length;
+      return ctl > 0 ? k / ctl : null;
+    });
+  }
+  function openInlineEditor(i){
+    inlineWeekIndex = i;
+    const w = PLAN[i], d = weekActual(i);
+    byId('inlineEditorTitle').textContent = `S${i} · ${w.label} · ${w.dates}`;
+    byId('inlineKm').value = d.kmReel ?? '';
+    byId('inlineDp').value = d.dpReel ?? '';
+    byId('inlineSessions').value = d.seancesRealisees ?? '';
+    byId('inlineNotes').value = d.notes ?? '';
+    byId('inlineWeekEditor').classList.add('active');
+  }
+  function saveInlineWeek(){
+    if(inlineWeekIndex === null) return;
+    saveWeekData(inlineWeekIndex, {
+      kmReel: byId('inlineKm').value,
+      dpReel: byId('inlineDp').value,
+      seancesRealisees: byId('inlineSessions').value,
+      notes: byId('inlineNotes').value
+    });
+    byId('inlineWeekEditor').classList.remove('active');
+  }
+
+  function renderTimeline(){
+    byId('timeline').innerHTML = PLAN.map(w => {
+      const status = statusForWeek(w);
+      const d = weekActual(w.i);
+      const typeClass = slugType(w.type);
+      return `<article class="week-card ${status === 'active' ? 'active' : ''} ${w.type.includes('race') ? 'race' : ''}" data-week="${w.i}">
+        <div class="week-top"><div><div class="week-num">S${w.i}</div><div class="week-dates">${w.dates}</div></div><span class="pill ${typeClass}">${w.type}</span></div>
+        <div class="week-meta"><div>Km cible<strong>${weekRangeText(w.kmMin,w.kmMax)}</strong></div><div>D+ cible<strong>${weekRangeText(w.dpMin,w.dpMax)}</strong></div></div>
+        <div class="row"><span>Statut</span><strong class="${status==='passed'?'status-done':status==='active'?'status-now':'status-future'}">${statusLabel(status)}</strong></div>
+        ${w.race ? `<div class="alert" style="margin-top:10px">Course : ${w.race}</div>` : ''}
+        ${hasWeekEntry(w.i) ? `<div class="row"><span>Saisi</span><strong>${fmt(num(d.kmReel),1)} km · ${fmt(num(d.dpReel),0)} D+</strong></div>` : ''}
+      </article>`;
+    }).join('');
+    document.querySelectorAll('.week-card').forEach(card => card.addEventListener('click', () => openDrawer(Number(card.dataset.week))));
+  }
+
+  function openDrawer(i){
+    drawerWeekIndex = i;
+    const w = PLAN[i], d = weekActual(i);
+    byId('drawerTitle').textContent = `S${w.i} — ${w.label}`;
+    byId('drawerMeta').innerHTML = `${w.dates} · <span class="pill ${slugType(w.type)}">${w.type}</span> · ${weekRangeText(w.kmMin,w.kmMax,' km')} · ${weekRangeText(w.dpMin,w.dpMax,' m D+')}`;
+    byId('drawerSessions').innerHTML = w.seances.map(s => `<div class="session-item"><strong>${s[0]}</strong><span>${s[1]}</span></div>`).join('');
+    byId('drawerKm').value = d.kmReel ?? '';
+    byId('drawerDp').value = d.dpReel ?? '';
+    byId('drawerSessionsDone').value = d.seancesRealisees ?? '';
+    byId('drawerNotes').value = d.notes ?? '';
+    byId('drawer').classList.add('open');
+    byId('drawerBackdrop').classList.add('open');
+  }
+  function closeDrawer(){byId('drawer').classList.remove('open');byId('drawerBackdrop').classList.remove('open');drawerWeekIndex = null;}
+  function saveDrawerWeek(){
+    if(drawerWeekIndex === null) return;
+    saveWeekData(drawerWeekIndex,{kmReel:byId('drawerKm').value,dpReel:byId('drawerDp').value,seancesRealisees:byId('drawerSessionsDone').value,notes:byId('drawerNotes').value});
+  }
+  function deleteDrawerWeek(){
+    if(drawerWeekIndex === null) return;
+    delete weekData[String(drawerWeekIndex)];
+    saveJSON(STORAGE.weeks, weekData);
+    closeDrawer();
+    renderAll();
+  }
+  function saveWeekData(i, payload){
+    weekData[String(i)] = {...weekData[String(i)], ...payload, updatedAt:new Date().toISOString()};
+    saveJSON(STORAGE.weeks, weekData);
+    renderAll();
+  }
+
+  function renderBlocks(){
+    byId('blocksGrid').innerHTML = PHASES.map(p => {
+      const range = phaseRange(p), planKm = sumPlanKm(range), planDp = sumPlanDp(range), actualKm = actualKmTotal(range), actualDp = actualDpTotal(range);
+      const status = phaseStatus(p), color = status === 'Terminée' ? 'green' : status === 'En cours' ? 'orange' : 'gray';
+      return `<article class="block-card">
+        <h3>${p.label}</h3><div class="muted">${p.name} · S${p.from}–S${p.to}</div>
+        <div class="metrics"><div>Km prévus : <strong>${fmt(planKm,1)}</strong></div><div>D+ prévu : <strong>${fmt(planDp,0)}</strong></div><div>Km réalisés : <strong>${fmt(actualKm,1)}</strong></div><div>D+ réalisé : <strong>${fmt(actualDp,0)}</strong></div></div>
+        <div class="progress-wrap"><div class="progress-bar ${color}" style="width:${clamp(pct(actualKm,planKm),0,100)}%"></div></div>
+        <div class="row"><span>Statut</span><strong><span class="pill ${color}">${status === 'Terminée' ? '✓ Terminée' : status}</span></strong></div>
+        ${status === 'Terminée' ? `<div class="kpi-detail">Écart km ${fmt(signedPct(actualKm,planKm),1)} % · Écart D+ ${fmt(signedPct(actualDp,planDp),1)} %</div>` : `<div class="kpi-detail">Complétion ${fmt(pct(actualKm,planKm),1)} %</div>`}
+      </article>`;
+    }).join('');
+  }
+
+  function initRadar(){
+    const wrap = byId('qualitySliders');
+    wrap.innerHTML = QUALITIES.map(q => {
+      const v = radarStore.current[q] ?? 5;
+      return `<div class="quality-row"><span>${q}</span><input type="range" min="1" max="10" value="${v}" data-quality="${q}"><output>${v}</output></div>`;
+    }).join('');
+    wrap.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', e => {
+        const q = e.target.dataset.quality;
+        const v = Number(e.target.value);
+        radarStore.current[q] = v;
+        e.target.nextElementSibling.textContent = v;
+        saveJSON(STORAGE.radar, radarStore);
+          });
+    });
+    byId('saveRadar').addEventListener('click', () => {
+      const previous = loadJSON(STORAGE.radar, radarStore)?.current || radarStore.current;
+      radarStore.previous = {...previous};
+      radarStore.current = {...radarStore.current};
+      radarStore.savedAt = new Date().toISOString();
+      saveJSON(STORAGE.radar, radarStore);
+      });
+  }
+  function renderRadarChart(){
+    if(typeof Chart === 'undefined') return;
+    const data = {
+      labels:QUALITIES,
+      datasets:[
+        ...(radarStore.previous ? [{label:'Évaluation précédente',data:QUALITIES.map(q => radarStore.previous[q] ?? null),borderColor:'rgba(210,215,224,.35)',backgroundColor:'rgba(210,215,224,.08)',pointRadius:2}] : []),
+        {label:'Évaluation actuelle',data:QUALITIES.map(q => radarStore.current[q] ?? 5),borderColor:getCSS('--orange'),backgroundColor:'rgba(232,98,42,.18)',pointRadius:4}
+      ]
+    };
+    const options = {responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:10,ticks:{display:false,stepSize:2},grid:{color:'rgba(255,255,255,.08)'},angleLines:{color:'rgba(255,255,255,.08)'},pointLabels:{color:getCSS('--light-gray'),font:{weight:'700'}}}},plugins:{legend:{labels:{color:getCSS('--light-gray')}}}};
+    if(radarChart){radarChart.data = data; radarChart.options = options; radarChart.update();}
+    else radarChart = new Chart(byId('radarChart'),{type:'radar',data,options});
+    byId('radarSavedAt').textContent = radarStore.savedAt ? `Dernière sauvegarde : ${new Date(radarStore.savedAt).toLocaleString('fr-FR')}` : 'Non sauvegardé.';
+  }
+
+  function initJournalForm(){
+    const today = new Date().toISOString().slice(0,10);
+    byId('journalDate').value = today;
+    byId('journalType').innerHTML = JOURNAL_TYPES.map(t => `<option>${t}</option>`).join('');
+    byId('journalFilter').innerHTML = ['Tous',...JOURNAL_TYPES].map(t => `<option>${t}</option>`).join('');
+    byId('journalForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const entry = {
+        id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        date:byId('journalDate').value || today,
+        type:byId('journalType').value,
+        mood:byId('journalMood').value,
+        km:Number(byId('journalKm').value || 0),
+        dp:Number(byId('journalDp').value || 0),
+        notes:byId('journalNotes').value.trim(),
+        createdAt:new Date().toISOString()
+      };
+      journal.push(entry);
+      saveJSON(STORAGE.journal, journal);
+      byId('journalKm').value = ''; byId('journalDp').value = ''; byId('journalNotes').value = '';
+      renderJournal();
+    });
+    byId('journalFilter').addEventListener('change', renderJournal);
+  }
+  function renderJournal(){
+    const filter = byId('journalFilter')?.value || 'Tous';
+    const filtered = journal.filter(j => filter === 'Tous' || j.type === filter).sort((a,b)=>new Date(b.date) - new Date(a.date) || new Date(b.createdAt) - new Date(a.createdAt));
+    byId('journalList').innerHTML = filtered.length ? filtered.map(j => `<article class="journal-item">
+      <div class="journal-head"><strong>${j.mood} ${j.type} · ${new Date(j.date + 'T00:00:00').toLocaleDateString('fr-FR')}</strong><button class="btn gray" data-del-journal="${j.id}">Supprimer</button></div>
+      <div class="journal-note">${escapeHTML(j.notes || '—')}</div>
+      <div class="journal-meta">${fmt(j.km,1)} km · ${fmt(j.dp,0)} m D+ · ajouté le ${new Date(j.createdAt).toLocaleString('fr-FR')}</div>
+    </article>`).join('') : '<div class="muted">Aucune entrée.</div>';
+    document.querySelectorAll('[data-del-journal]').forEach(btn => btn.addEventListener('click', () => {
+      journal = journal.filter(j => j.id !== btn.dataset.delJournal);
+      saveJSON(STORAGE.journal, journal);
+      renderJournal();
+    }));
+  }
+  function escapeHTML(str){return String(str).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+
+  function initQuotes(){
+    byId('quoteTrack').innerHTML = QUOTES.map(q => `<div class="quote">${q.replace(' — ','<small>— ')}${q.includes(' — ')?'</small>':''}</div>`).join('');
+    byId('quotePrev').addEventListener('click', prevQuote);
+    byId('quoteNext').addEventListener('click', nextQuote);
+    renderQuote();
+  }
+  function renderQuote(){byId('quoteTrack').style.transform = `translateX(-${quoteIndex * 100}%)`;}
+  function nextQuote(){quoteIndex = (quoteIndex + 1) % QUOTES.length; renderQuote();}
+  function prevQuote(){quoteIndex = (quoteIndex - 1 + QUOTES.length) % QUOTES.length; renderQuote();}
+
+  function renderFooter(){
+    const planKm = sumPlanKm();
+    const planDp = sumPlanDp();
+    const peak = PLAN.reduce((m,w)=> weekKmTarget(w) > weekKmTarget(m) ? w : m, PLAN[0]);
+    byId('footerTotals').innerHTML = `Plan S0–S21 · total moyen ${fmt(planKm,1)} km · ${fmt(planDp,0)} m D+ · pic ${peak.label} : ${weekRangeText(peak.kmMin,peak.kmMax,' km')} / ${weekRangeText(peak.dpMin,peak.dpMax,' m D+')}.`;
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
