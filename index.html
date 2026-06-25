@@ -173,7 +173,7 @@
     .drawer{position:fixed;z-index:41;right:0;top:0;bottom:0;width:min(560px,100%);padding:22px;transform:translateX(105%);transition:transform .3s ease;overflow:auto;border-radius:0;background:#0E1218}
     .drawer.open{transform:translateX(0)}
     .drawer-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:16px}.drawer h2{font-family:'Bebas Neue';font-size:46px;line-height:.95;margin:0}.drawer-close{background:transparent;border:1px solid var(--line);color:#fff;border-radius:var(--radius);padding:8px 10px}
-    .session-list{display:grid;gap:8px;margin:14px 0}.session-item{background:#090B0E;border:1px solid var(--line);border-radius:var(--radius);padding:11px}.session-item strong{display:block;margin-bottom:4px}.session-item span{color:var(--muted);font-size:13px;line-height:1.45}
+    .session-list{display:grid;gap:8px;margin:14px 0}.session-item{background:#090B0E;border:1px solid var(--line);border-radius:var(--radius);padding:11px}.session-item strong{display:block;margin-bottom:4px}.session-item span{color:var(--muted);font-size:13px;line-height:1.45}.session-short{margin-top:8px;display:inline-flex;align-items:center;border:1px solid rgba(232,98,42,.45);border-radius:var(--radius);padding:4px 7px;color:var(--orange);font-weight:800;font-size:12px;letter-spacing:.04em;background:rgba(232,98,42,.08)}
     .blocks-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
     .block-card{background:#0F1319;border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-height:210px}
     .block-card h3{font-family:'Bebas Neue';font-size:32px;margin:0 0 6px}.block-card .metrics{display:grid;gap:7px;margin:12px 0;color:var(--muted);font-size:13px}.block-card strong{color:#fff}
@@ -261,7 +261,6 @@
             <label>Km réel<input id="inlineKm" type="number" min="0" step="0.1"></label>
             <label>D+ réel<input id="inlineDp" type="number" min="0" step="1"></label>
             <label>Séances<input id="inlineSessions" type="number" min="0" step="1"></label>
-            <label>Note courte<input id="inlineNotes" type="text" placeholder="optionnel"></label>
           </div>
           <div class="btn-row"><button id="inlineSave" class="btn">Sauvegarder</button><button id="inlineClose" class="btn gray">Fermer</button></div>
         </div>
@@ -277,57 +276,10 @@
       </div>
     </section>
 
-    <section class="section" id="dashboard">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">TABLEAU DE BORD</h2>
-          <p class="section-sub">Toutes les valeurs planifiées sont calculées depuis le plan V4 S0–S21. Les valeurs réalisées proviennent de localStorage.</p>
-        </div>
-        <button class="btn secondary" id="resetDemoBtn" title="Supprime les données locales de suivi">Réinitialiser suivi local</button>
-      </div>
-      <div class="dashboard-grid">
-        <div class="card span-3"><div class="kpi-label">Semaine en cours</div><div id="kpiWeek" class="kpi-value">--</div><div id="kpiWeekStatus" class="kpi-detail">--</div></div>
-        <div class="card span-3"><div class="kpi-label">Phase en cours</div><div id="kpiPhase" class="kpi-value">--</div><div id="kpiPhaseDetail" class="kpi-detail">--</div></div>
-        <div class="card span-2"><div class="kpi-label">Jours TL50</div><div id="kpiDaysMain" class="kpi-value">--</div><div class="kpi-detail">avant Hong Kong</div></div>
-        <div class="card span-2"><div class="kpi-label">Semaines TL50</div><div id="kpiWeeksMain" class="kpi-value">--</div><div class="kpi-detail">avant course</div></div>
-        <div class="card span-2" id="kpiSecondaryWrap"><div class="kpi-label">Secondaires</div><div id="kpiSecondary" class="kpi-detail">--</div></div>
-
-        <div class="card span-4"><div class="kpi-label">Km réalisés / plan total</div><div id="kpiKmTotal" class="kpi-value">--</div><div class="progress-wrap"><div id="barKmTotal" class="progress-bar"></div></div><div id="detailKmTotal" class="kpi-detail">--</div></div>
-        <div class="card span-4"><div class="kpi-label">D+ réalisé / plan total</div><div id="kpiDpTotal" class="kpi-value">--</div><div class="progress-wrap"><div id="barDpTotal" class="progress-bar blue"></div></div><div id="detailDpTotal" class="kpi-detail">--</div></div>
-        <div class="card span-4"><div class="kpi-label">Séances réalisées / prévues</div><div id="kpiSessionsTotal" class="kpi-value">--</div><div class="progress-wrap"><div id="barSessionsTotal" class="progress-bar green"></div></div><div id="detailSessionsTotal" class="kpi-detail">--</div></div>
-
-        <div class="card span-3"><div class="kpi-label">Écart km cumulé vs plan</div><div id="kpiKmGap" class="kpi-value">--</div><div id="kpiKmGapDetail" class="kpi-detail">--</div></div>
-        <div class="card span-3"><div class="kpi-label">Écart D+ cumulé vs plan</div><div id="kpiDpGap" class="kpi-value">--</div><div id="kpiDpGapDetail" class="kpi-detail">--</div></div>
-        <div class="card span-3"><div class="kpi-label">ATL / CTL</div><div id="kpiAtlCtl" class="kpi-value">--</div><div id="kpiAtlCtlDetail" class="kpi-detail">--</div><div class="progress-wrap"><div id="barAtlCtl" class="progress-bar"></div></div></div>
-        <div class="card span-3"><div class="kpi-label">Nutrition</div><select id="nutritionStatus" aria-label="Statut nutrition"></select><div id="nutritionDetail" class="kpi-detail">--</div></div>
-
-        <div class="card span-4"><div class="kpi-label">Semaine active · km</div><div id="kpiKmWeek" class="kpi-value">--</div><div id="detailKmWeek" class="kpi-detail">--</div></div>
-        <div class="card span-4"><div class="kpi-label">Semaine active · D+</div><div id="kpiDpWeek" class="kpi-value">--</div><div id="detailDpWeek" class="kpi-detail">--</div></div>
-        <div class="card span-4"><div class="kpi-label">Semaine active · séances</div><div id="kpiSessionsWeek" class="kpi-value">--</div><div id="detailSessionsWeek" class="kpi-detail">--</div></div>
-
-        <div class="card span-4"><div class="kpi-label">Fraîcheur perçue</div><div class="freshness"><input id="freshnessSlider" type="range" min="1" max="10" value="7"><span id="freshnessValue" class="pill green">7/10</span></div><div id="freshnessDetail" class="kpi-detail">Vert ≥7 · orange 4–6 · rouge ≤3</div></div>
-        <div class="card span-4"><div class="kpi-label">Projection km à J-1</div><div id="projectionKm" class="kpi-value">--</div><div id="projectionKmDetail" class="kpi-detail">--</div></div>
-        <div class="card span-4"><div class="kpi-label">Projection D+ à J-1</div><div id="projectionDp" class="kpi-value">--</div><div id="projectionDpDetail" class="kpi-detail">--</div></div>
-
-        <div class="card span-12"><div class="kpi-label">Alertes intelligentes</div><div id="alerts" class="alert-stack"></div></div>
-      </div>
-    </section>
-
     <section class="section" id="blocks">
       <div class="section-head"><div><h2 class="section-title">BILAN PAR BLOC</h2><p class="section-sub">S0 + 4 phases. Les écarts sont calculés par rapport aux moyennes km/D+ du plan.</p></div></div>
       <div id="blocksGrid" class="blocks-grid"></div>
     </section>
-
-    <footer class="footer-card">
-      <div>
-        <div class="footer-title">HK · 14.11.2026 · 45 KM · 2500 D+</div>
-        <div id="footerTotals" class="footer-metrics">Totaux plan calculés...</div>
-      </div>
-      <svg class="profile-svg" viewBox="0 0 900 260" role="img" aria-label="Profil de course stylisé">
-        <path class="profile-fill" d="M20 225 L20 205 L90 198 L145 173 L210 182 L285 112 L340 145 L398 92 L470 120 L540 64 L615 128 L688 94 L760 154 L835 132 L880 174 L880 225 Z"></path>
-        <path class="profile-line" d="M20 205 L90 198 L145 173 L210 182 L285 112 L340 145 L398 92 L470 120 L540 64 L615 128 L688 94 L760 154 L835 132 L880 174"></path>
-      </svg>
-    </footer>
   </main>
 
   <div id="drawerBackdrop" class="drawer-backdrop"></div>
@@ -339,7 +291,6 @@
         <label>Km réel<input id="drawerKm" type="number" min="0" step="0.1"></label>
         <label>D+ réel<input id="drawerDp" type="number" min="0" step="1"></label>
         <label>Séances réalisées<input id="drawerSessionsDone" type="number" min="0" step="1"></label>
-        <label>Notes libres<textarea id="drawerNotes"></textarea></label>
       </div>
       <div class="btn-row"><button id="drawerSave" class="btn">Sauvegarder</button><button id="drawerDelete" class="btn red">Effacer semaine</button></div>
     </div>
@@ -1809,7 +1760,7 @@
   function sumSessions(range = PLAN){return range.reduce((s,w) => s + w.sessionsPlanned, 0);}
   function weekActual(i){return weekData[String(i)] || {};}
   function num(v){const n = Number(v); return Number.isFinite(n) ? n : 0;}
-  function hasWeekEntry(i){const d = weekActual(i); return d && (d.kmReel !== undefined || d.dpReel !== undefined || d.seancesRealisees !== undefined || d.notes);}
+  function hasWeekEntry(i){const d = weekActual(i); return d && (d.kmReel !== undefined || d.dpReel !== undefined || d.seancesRealisees !== undefined);}
   function enteredWeeks(){return PLAN.filter(w => hasWeekEntry(w.i) && Number(weekActual(w.i).kmReel) > 0);}
   function actualKmTotal(range = PLAN){return range.reduce((s,w) => s + num(weekActual(w.i).kmReel), 0);}
   function actualDpTotal(range = PLAN){return range.reduce((s,w) => s + num(weekActual(w.i).dpReel), 0);}
@@ -1844,7 +1795,6 @@
     initMantras();
     initCountdowns();
     initJournalForm();
-    initNutrition();
     bindGlobalEvents();
     renderAll();
     setInterval(updateCountdowns, 1000);
@@ -1897,36 +1847,15 @@
     byId('drawerBackdrop').addEventListener('click', closeDrawer);
     byId('drawerSave').addEventListener('click', saveDrawerWeek);
     byId('drawerDelete').addEventListener('click', deleteDrawerWeek);
-    byId('freshnessSlider').addEventListener('input', e => {
-      const score = Number(e.target.value);
-      if(!freshnessStore.weeks) freshnessStore.weeks = {};
-      freshnessStore.weeks[String(activeWeekIndex)] = score;
-      freshnessStore.updatedAt = new Date().toISOString();
-      saveJSON(STORAGE.freshness, freshnessStore);
-      renderFreshness();
-    });
-    byId('nutritionStatus').addEventListener('change', e => {
-      freshnessStore.nutritionStatusOverride = e.target.value || null;
-      saveJSON(STORAGE.freshness, freshnessStore);
-      renderNutrition();
-    });
-    byId('resetDemoBtn').addEventListener('click', () => {
-      if(confirm('Supprimer les données locales de suivi TL50 ?')){
-        [STORAGE.weeks, STORAGE.journal, STORAGE.freshness].forEach(k => localStorage.removeItem(k));
-        location.reload();
-      }
-    });
   }
 
   function renderAll(){
     activeWeekIndex = detectActiveWeek();
     renderHeroContext();
-    renderDashboard();
     renderCharts();
     renderTimeline();
     renderBlocks();
     renderJournal();
-    renderFooter();
     renderSideProgress();
   }
 
@@ -2243,7 +2172,6 @@
     byId('inlineKm').value = d.kmReel ?? '';
     byId('inlineDp').value = d.dpReel ?? '';
     byId('inlineSessions').value = d.seancesRealisees ?? '';
-    byId('inlineNotes').value = d.notes ?? '';
     byId('inlineWeekEditor').classList.add('active');
   }
   function saveInlineWeek(){
@@ -2251,8 +2179,7 @@
     saveWeekData(inlineWeekIndex, {
       kmReel: byId('inlineKm').value,
       dpReel: byId('inlineDp').value,
-      seancesRealisees: byId('inlineSessions').value,
-      notes: byId('inlineNotes').value
+      seancesRealisees: byId('inlineSessions').value
     });
     byId('inlineWeekEditor').classList.remove('active');
   }
@@ -2273,23 +2200,40 @@
     document.querySelectorAll('.week-card').forEach(card => card.addEventListener('click', () => openDrawer(Number(card.dataset.week))));
   }
 
+
+  function abbreviatedSession(text){
+    const raw = String(text || '');
+    let m = raw.match(/(\d+)\s*à\s*(\d+)\s*(?:×|x)\s*(\d+)\s*min/i);
+    if(m) return `10' + ${m[1]}–${m[2]}×${m[3]}' r' + 10'`;
+    m = raw.match(/(\d+)\s*(?:×|x)\s*(\d+)\s*min/i);
+    if(m) return `10' + ${m[1]}×${m[2]}' r' + 10'`;
+    m = raw.match(/(\d+)\s*(?:×|x)\s*(\d+)\s*sec/i);
+    if(m) return `10' + ${m[1]}×${m[2]}\" r' + 10'`;
+    m = raw.match(/(\d+)\s*lignes?\s+droites?(?:\s+de)?\s*(\d+)\s*sec/i);
+    if(m) return `10' + ${m[1]}×${m[2]}\" LD + 10'`;
+    return '';
+  }
+  function renderSessionItem(s){
+    const short = abbreviatedSession(s[1]);
+    return `<div class="session-item"><strong>${escapeHTML(s[0])}</strong><span>${escapeHTML(s[1])}</span>${short ? `<div class="session-short">${escapeHTML(short)}</div>` : ''}</div>`;
+  }
+
   function openDrawer(i){
     drawerWeekIndex = i;
     const w = PLAN[i], d = weekActual(i);
     byId('drawerTitle').textContent = `S${w.i} — ${w.label}`;
     byId('drawerMeta').innerHTML = `${w.dates} · <span class="pill ${slugType(w.type)}">${w.type}</span> · ${weekRangeText(w.kmMin,w.kmMax,' km')} · ${weekRangeText(w.dpMin,w.dpMax,' m D+')}`;
-    byId('drawerSessions').innerHTML = w.seances.map(s => `<div class="session-item"><strong>${s[0]}</strong><span>${s[1]}</span></div>`).join('');
+    byId('drawerSessions').innerHTML = w.seances.map(renderSessionItem).join('');
     byId('drawerKm').value = d.kmReel ?? '';
     byId('drawerDp').value = d.dpReel ?? '';
     byId('drawerSessionsDone').value = d.seancesRealisees ?? '';
-    byId('drawerNotes').value = d.notes ?? '';
     byId('drawer').classList.add('open');
     byId('drawerBackdrop').classList.add('open');
   }
   function closeDrawer(){byId('drawer').classList.remove('open');byId('drawerBackdrop').classList.remove('open');drawerWeekIndex = null;}
   function saveDrawerWeek(){
     if(drawerWeekIndex === null) return;
-    saveWeekData(drawerWeekIndex,{kmReel:byId('drawerKm').value,dpReel:byId('drawerDp').value,seancesRealisees:byId('drawerSessionsDone').value,notes:byId('drawerNotes').value});
+    saveWeekData(drawerWeekIndex,{kmReel:byId('drawerKm').value,dpReel:byId('drawerDp').value,seancesRealisees:byId('drawerSessionsDone').value});
   }
   function deleteDrawerWeek(){
     if(drawerWeekIndex === null) return;
