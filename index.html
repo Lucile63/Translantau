@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TransLantau50 — Préparation V2</title>
+  <title>TransLantau50 — Préparation V4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -195,7 +195,7 @@
   <main class="page">
     <section class="hero" id="top">
       <div class="hero-main">
-        <div class="eyebrow">Objectif principal · 14 novembre 2026</div>
+        <div class="eyebrow">Objectif principal · 14 novembre 2026 · Plan V4</div>
         <h1>TRANSLANTAU50<br>PRÉPARATION</h1>
         <div class="subtitle">45 km · 2500 D+ · Hong Kong</div>
         <div class="countdown-grid" aria-label="Compte à rebours TransLantau50">
@@ -209,6 +209,7 @@
       <aside class="hero-side">
         <div class="section-title">ÉCHÉANCES</div>
         <div class="mini-races">
+          <div id="sixdCounter" class="mini-race"><div><div class="name">6D Marathon / 6000D</div><div class="muted">43 km · 2100 D+ · S6</div></div><div><div id="sixdDays" class="days">--</div><div class="muted">jours</div></div></div>
           <div id="luzitrailCounter" class="mini-race"><div><div class="name">Luzi'trail</div><div class="muted">16 km · 410 D+ · S11</div></div><div><div id="luzitrailDays" class="days">--</div><div class="muted">jours</div></div></div>
           <div id="dolmensCounter" class="mini-race"><div><div class="name">Trail des Dolmens</div><div class="muted">15 km · 370 D+ · S12</div></div><div><div id="dolmensDays" class="days">--</div><div class="muted">jours</div></div></div>
         </div>
@@ -218,16 +219,69 @@
           <div id="heroActivePhase" class="kpi-detail">--</div>
         </div>
         <div class="hero-note">
-          V2 · Bloc haute montagne du 17 au 21 août : S8 allégée, S9 gros D+ spécifique, S10 absorption obligatoire. Le kilométrage reste subordonné au D+, aux quadriceps et à la fraîcheur finale.
+          V4 · Zones FC Lucile, Zwift et Compex intégrés. 6D Marathon en objectif B contrôlé, S7 absorption, S8/S9/S14/S18 modulables. Priorité : D+ spécifique, quadriceps, descente propre et fraîcheur finale.
         </div>
       </aside>
+    </section>
+
+    <section class="section" id="timeline-section">
+      <div class="section-head"><div><h2 class="section-title">PLANNING SEMAINES</h2><p class="section-sub">Cliquer une semaine pour voir les séances et saisir les données réelles.</p></div></div>
+      <div id="timeline" class="timeline" aria-label="Timeline semaines"></div>
+    </section>
+
+    <section class="section" id="journal">
+      <div class="section-head"><div><h2 class="section-title">JOURNAL DE BORD</h2><p class="section-sub">Entrées stockées localement, filtrables par type et supprimables.</p></div></div>
+      <div class="journal-grid">
+        <form id="journalForm" class="card">
+          <div class="form-grid" style="grid-template-columns:1fr 1fr">
+            <label>Date<input id="journalDate" type="date"></label>
+            <label>Type<select id="journalType"></select></label>
+            <label>Ressenti<select id="journalMood"><option>😴</option><option>😐</option><option selected>💪</option><option>🔥</option></select></label>
+            <label>Km<input id="journalKm" type="number" min="0" step="0.1"></label>
+            <label>D+<input id="journalDp" type="number" min="0" step="1"></label>
+          </div>
+          <label style="margin-top:10px">Notes<textarea id="journalNotes" placeholder="Ressenti, douleur, nutrition, météo, descente, quadriceps..."></textarea></label>
+          <div class="btn-row"><button class="btn" type="submit">Ajouter au journal</button></div>
+        </form>
+        <div class="card">
+          <div class="btn-row" style="margin-top:0;margin-bottom:10px"><label style="max-width:240px">Filtrer<select id="journalFilter"></select></label></div>
+          <div id="journalList" class="journal-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="volume-section">
+      <div class="section-head"><div><h2 class="section-title">GRAPHIQUE VOLUME</h2><p class="section-sub">Courbe cible, courbe réelle, option D+ et marqueurs courses. Cliquer un point de semaine passée ou active pour saisir les données réelles.</p></div></div>
+      <div class="chart-card">
+        <div class="chart-title"><h3>Volume 22 semaines</h3><label class="toggle"><input id="toggleDp" type="checkbox">Afficher D+ axe droit</label></div>
+        <canvas id="volumeChart" aria-label="Graphique volume"></canvas>
+        <div id="inlineWeekEditor" class="inline-editor">
+          <div class="kpi-label" id="inlineEditorTitle">Saisie semaine</div>
+          <div class="form-grid">
+            <label>Km réel<input id="inlineKm" type="number" min="0" step="0.1"></label>
+            <label>D+ réel<input id="inlineDp" type="number" min="0" step="1"></label>
+            <label>Séances<input id="inlineSessions" type="number" min="0" step="1"></label>
+            <label>Note courte<input id="inlineNotes" type="text" placeholder="optionnel"></label>
+          </div>
+          <div class="btn-row"><button id="inlineSave" class="btn">Sauvegarder</button><button id="inlineClose" class="btn gray">Fermer</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="atlctl-section">
+      <div class="section-head"><div><h2 class="section-title">GRAPHIQUE ATL / CTL</h2><p class="section-sub">Ratio charge aiguë / charge chronique. Zone verte 0.8–1.3, alerte surcharge ou désentraînement hors zone.</p></div></div>
+      <div class="chart-card">
+        <div class="chart-title"><h3>ATL / CTL</h3><span class="pill green">Zone utile 0.8–1.3</span></div>
+        <canvas id="atlCtlChart" aria-label="Graphique ATL CTL"></canvas>
+        <p class="section-sub">ATL = km semaine active. CTL = moyenne km des 4 dernières semaines saisies. Les semaines sans saisie sont exclues.</p>
+      </div>
     </section>
 
     <section class="section" id="dashboard">
       <div class="section-head">
         <div>
           <h2 class="section-title">TABLEAU DE BORD</h2>
-          <p class="section-sub">Toutes les valeurs planifiées sont calculées depuis le plan V2 S0–S21. Les valeurs réalisées proviennent de localStorage.</p>
+          <p class="section-sub">Toutes les valeurs planifiées sont calculées depuis le plan V4 S0–S21. Les valeurs réalisées proviennent de localStorage.</p>
         </div>
         <button class="btn secondary" id="resetDemoBtn" title="Supprime les données locales de suivi">Réinitialiser suivi local</button>
       </div>
@@ -256,110 +310,12 @@
         <div class="card span-4"><div class="kpi-label">Projection D+ à J-1</div><div id="projectionDp" class="kpi-value">--</div><div id="projectionDpDetail" class="kpi-detail">--</div></div>
 
         <div class="card span-12"><div class="kpi-label">Alertes intelligentes</div><div id="alerts" class="alert-stack"></div></div>
-        <div class="card span-12"><div class="kpi-label">Phases · synthèse temps réel</div><div id="phaseDashboard" class="phase-grid"></div></div>
       </div>
-    </section>
-
-    <section class="section" id="charts">
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-title"><h3>Volume 22 semaines</h3><label class="toggle"><input id="toggleDp" type="checkbox">Afficher D+ axe droit</label></div>
-          <canvas id="volumeChart" aria-label="Graphique volume"></canvas>
-          <div id="inlineWeekEditor" class="inline-editor">
-            <div class="kpi-label" id="inlineEditorTitle">Saisie semaine</div>
-            <div class="form-grid">
-              <label>Km réel<input id="inlineKm" type="number" min="0" step="0.1"></label>
-              <label>D+ réel<input id="inlineDp" type="number" min="0" step="1"></label>
-              <label>Séances<input id="inlineSessions" type="number" min="0" step="1"></label>
-              <label>Note courte<input id="inlineNotes" type="text" placeholder="optionnel"></label>
-            </div>
-            <div class="btn-row"><button id="inlineSave" class="btn">Sauvegarder</button><button id="inlineClose" class="btn gray">Fermer</button></div>
-          </div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title"><h3>ATL / CTL</h3><span class="pill green">Zone utile 0.8–1.3</span></div>
-          <canvas id="atlCtlChart" aria-label="Graphique ATL CTL"></canvas>
-          <p class="section-sub">ATL = km semaine active. CTL = moyenne km des 4 dernières semaines saisies. Les semaines sans saisie sont exclues.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="timeline-section">
-      <div class="section-head"><div><h2 class="section-title">PLANNING SEMAINES</h2><p class="section-sub">Cliquer une semaine pour voir les séances et saisir les données réelles.</p></div></div>
-      <div id="timeline" class="timeline" aria-label="Timeline semaines"></div>
     </section>
 
     <section class="section" id="blocks">
       <div class="section-head"><div><h2 class="section-title">BILAN PAR BLOC</h2><p class="section-sub">S0 + 4 phases. Les écarts sont calculés par rapport aux moyennes km/D+ du plan.</p></div></div>
       <div id="blocksGrid" class="blocks-grid"></div>
-    </section>
-
-    <section class="section" id="radar">
-      <div class="section-head"><div><h2 class="section-title">RADAR QUALITÉS</h2><p class="section-sub">Évaluation subjective 1–10. La courbe fantôme correspond à la précédente évaluation sauvegardée.</p></div></div>
-      <div class="radar-grid">
-        <div class="card"><div id="qualitySliders" class="slider-stack"></div><div class="btn-row"><button id="saveRadar" class="btn">Sauvegarder évaluation</button><span id="radarSavedAt" class="muted"></span></div></div>
-        <div class="chart-card"><canvas id="radarChart" aria-label="Radar qualités"></canvas></div>
-      </div>
-    </section>
-
-    <section class="section" id="journal">
-      <div class="section-head"><div><h2 class="section-title">JOURNAL DE BORD</h2><p class="section-sub">Entrées stockées localement, filtrables par type et supprimables.</p></div></div>
-      <div class="journal-grid">
-        <form id="journalForm" class="card">
-          <div class="form-grid" style="grid-template-columns:1fr 1fr">
-            <label>Date<input id="journalDate" type="date"></label>
-            <label>Type<select id="journalType"></select></label>
-            <label>Ressenti<select id="journalMood"><option>😴</option><option>😐</option><option selected>💪</option><option>🔥</option></select></label>
-            <label>Km<input id="journalKm" type="number" min="0" step="0.1"></label>
-            <label>D+<input id="journalDp" type="number" min="0" step="1"></label>
-          </div>
-          <label style="margin-top:10px">Notes<textarea id="journalNotes" placeholder="Ressenti, douleur, nutrition, météo, descente, quadriceps..."></textarea></label>
-          <div class="btn-row"><button class="btn" type="submit">Ajouter au journal</button></div>
-        </form>
-        <div class="card">
-          <div class="btn-row" style="margin-top:0;margin-bottom:10px"><label style="max-width:240px">Filtrer<select id="journalFilter"></select></label></div>
-          <div id="journalList" class="journal-list"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="rules">
-      <div class="rules">
-        <div class="section-head"><div><h2 class="section-title">PRINCIPES & RÈGLES D'AJUSTEMENT</h2><p class="section-sub">Arbitrage prioritaire V2 : préserver TransLantau50, éviter blessure/surcharge/fatigue résiduelle, maximiser D+ spécifique, marche active, quadriceps et descente.</p></div></div>
-        <div class="rules-grid">
-          <div>
-            <h3>Arbitrage prioritaire V2</h3>
-            <div class="rule-priority">
-              <div>Préserver la trajectoire vers TransLantau50</div><div>Éviter blessure, surcharge tendineuse et fatigue résiduelle</div><div>Maximiser D+ spécifique, marche active, quadriceps et descente</div><div>Maintenir la fraîcheur pour le 14/11/2026</div><div>Ne pas survaloriser les courses secondaires</div>
-            </div>
-            <div class="key-rule">76 km avec 4000 D+ bien absorbés valent mieux que 85 km roulants ou une semaine montagne qui détruit les quadriceps.</div>
-            <div class="alert green">Cibles nutrition : 70–90 g glucides/h · toutes les 20 min · 500–750 ml/h.</div>
-          </div>
-          <div>
-            <h3>Signaux d'ajustement</h3>
-            <table class="adjust-table">
-              <thead><tr><th>Signal</th><th>Ajustement</th></tr></thead>
-              <tbody>
-                <tr><td>Douleur localisée &gt; 3/10</td><td>Supprimer intensité + descente technique.</td></tr>
-                <tr><td>Douleur qui modifie la foulée</td><td>Stop course, vélo ou marche uniquement.</td></tr>
-                <tr><td>Quadriceps détruits &gt; 72 h</td><td>Baisser le D+ de 30–40 %.</td></tr>
-                <tr><td>Fatigue générale 3 jours de suite</td><td>Réduire la semaine, supprimer la qualité.</td></tr>
-                <tr><td>FC anormalement haute en EF</td><td>Transformer en footing Z1 ou vélo Z1.</td></tr>
-                <tr><td>Sommeil mauvais 2 nuits</td><td>Raccourcir la sortie longue ou la grosse journée.</td></tr>
-                <tr><td>Descente subie / perte de tonicité</td><td>Marcher les descentes techniques.</td></tr>
-                <tr><td>Après bloc montagne</td><td>Aucune intensité avant retour de jambes normales.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="quotes">
-      <div class="quote-panel">
-        <div class="quote-frame"><div id="quoteTrack" class="quote-track"></div></div>
-        <div class="quote-controls"><button id="quotePrev">←</button><button id="quoteNext">→</button></div>
-      </div>
     </section>
 
     <footer class="footer-card">
@@ -402,6 +358,7 @@
   };
   const RACES = {
     main: { name:'TransLantau50', date:'2026-11-14T08:00:00+08:00', week:21, km:45, dp:2500 },
+    sixd: { name:'6D Marathon / 6000D', date:'2026-08-01T07:00:00+02:00', week:6, km:43, dp:2100 },
     luzitrail: { name:"Luzi'trail", date:'2026-09-06T09:00:00+02:00', week:11, km:16, dp:410 },
     dolmens: { name:'Trail des Dolmens', date:'2026-09-13T09:00:00+02:00', week:12, km:15, dp:370 }
   };
@@ -431,43 +388,47 @@
     "start": "2026-06-16",
     "dates": "16–21 juin",
     "type": "reprise post-course",
-    "label": "Reprise post-Saint-Jacques",
+    "label": "Reprise post-course",
     "objective": "reprise anticipée contrôlée",
     "kmMin": 12,
     "kmMax": 16,
     "dpMin": 100,
     "dpMax": 150,
     "phase": "S0 — Reprise post-course",
-    "sessionsPlanned": 3,
+    "sessionsPlanned": 4,
     "race": null,
     "seances": [
       [
-        "Mardi 16",
-        "Repos, marche ou vélo très facile · RPE 1–2 · plat"
+        "Mardi",
+        "Repos, marche ou mobilité · RPE 1–2 · CX4 optionnel · Déverrouillage"
       ],
       [
-        "Mercredi 17",
-        "Footing 30–35 min très facile · RPE 2–3 · Z1/Z2 basse · plat/souple"
+        "Mercredi",
+        "Footing 30–35 min très facile · <143 à 153 max, RPE 2–3 · CX1 si jambes lourdes · Reprise impact"
       ],
       [
-        "Jeudi 18",
-        "Mobilité + gainage léger 20 min · RPE 2 · aucun impact"
+        "Jeudi",
+        "Mobilité + gainage léger 20 min · RPE 2 · Stabilité"
       ],
       [
-        "Vendredi 19",
-        "35–40 min EF + 4 lignes droites de 12 sec si jambes parfaites · RPE 3"
+        "Vendredi",
+        "35–40 min EF + 4 lignes droites 12 sec si jambes parfaites · 143–153, RPE 3 · Tonicité"
       ],
       [
-        "Samedi 20",
-        "Repos ou vélo Z1 35–45 min · RPE 1–2"
+        "Samedi",
+        "Repos ou ZW1 35–45 min · <143, RPE 1–2 · CX2 optionnel · Récupération"
       ],
       [
-        "Dimanche 21",
-        "45–50 min facile, 100–150 D+ max · RPE 3–4 · Z2 max"
+        "Dimanche",
+        "45–50 min facile, 100–150 D+ max · 143–153, RPE 3–4 · CX1 quadriceps/mollets · Reprise terrain"
       ],
       [
-        "Interdits",
-        "Côtes rapides, descente engagée, séance seuil, sortie longue. Aucun renforcement jambes lourd."
+        "Objectif ",
+        "relancer la mécanique sans fatigue post-course."
+      ],
+      [
+        "Renforcement ",
+        "aucun renforcement jambes lourd."
       ]
     ]
   },
@@ -477,38 +438,46 @@
     "dates": "22–28 juin",
     "type": "récupération active",
     "label": "Récupération active",
-    "objective": "reprise douce",
+    "objective": "reprise douce + Zwift récupération",
     "kmMin": 24,
     "kmMax": 24,
     "dpMin": 300,
     "dpMax": 300,
-    "phase": "Phase 1 — Base contrôlée",
-    "sessionsPlanned": 3,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 5,
     "race": null,
     "seances": [
       [
-        "EF 1",
-        "40 min très facile · RPE 3 · Z1/Z2"
+        "Lundi",
+        "Repos ou mobilité 15 min · RPE 1 · CX4 optionnel · Assimilation"
       ],
       [
-        "EF 2",
-        "45 min Z1/Z2 · RPE 3–4"
+        "Mardi",
+        "Footing 40 min très facile · <143–153, RPE 3 · Fréquence"
       ],
       [
-        "Trail facile",
-        "1h10–1h20, 200–300 D+ · RPE 4 · terrain souple sans descente rapide"
+        "Mercredi",
+        "Renfo léger : gainage, fessiers, mollets · RPE 3 · CX2 mollets optionnel · Stabilité"
       ],
       [
-        "Option",
-        "Vélo 40 min Z1 · RPE 2"
+        "Jeudi",
+        "Footing 45 min EF · 143–153, RPE 3–4 · Base aérobie"
       ],
       [
-        "Renforcement",
-        "1 séance légère : gainage, fessiers, mollets."
+        "Vendredi",
+        "ZW1 35–45 min ou repos · <143, RPE 1–2 · CX4 optionnel · Récupération active"
       ],
       [
-        "Objectif",
-        "Terminer fraîche, pas prouver que la récupération est finie."
+        "Samedi",
+        "Trail facile 1h10–1h20, 200–300 D+ · 143–153, RPE 4 · CX1 quadriceps/mollets · Terrain souple"
+      ],
+      [
+        "Dimanche",
+        "Repos ou marche · RPE 1–2 · Fraîcheur"
+      ],
+      [
+        "Objectif ",
+        "reprendre proprement, sans dette."
       ]
     ]
   },
@@ -517,39 +486,51 @@
     "start": "2026-06-29",
     "dates": "29 juin–5 juillet",
     "type": "charge légère",
-    "label": "Base aérobie",
-    "objective": "base aérobie",
+    "label": "Charge légère",
+    "objective": "base aérobie + côtes courtes",
     "kmMin": 35,
     "kmMax": 35,
     "dpMin": 700,
     "dpMax": 700,
-    "phase": "Phase 1 — Base contrôlée",
-    "sessionsPlanned": 4,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 6,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
         "Mardi",
-        "50 min EF + 6 lignes droites · RPE 3–4 · Z2 max"
+        "50 min EF + 6 lignes droites · 143–153, RPE 3–4 · Vitesse relâchée"
+      ],
+      [
+        "Mercredi",
+        "Renfo A force montée · RPE 5 · CX3 léger fessiers/quads seulement si fraîche · Force"
       ],
       [
         "Jeudi",
-        "8 × 45 sec côte, récupération descente lente · RPE 7"
+        "8 × 45 sec côte, récup descente lente · RPE 7 · CX1 léger le soir si besoin · Puissance côte"
+      ],
+      [
+        "Vendredi",
+        "ZW1 35–45 min ou repos · <143 · Drainage"
       ],
       [
         "Samedi",
-        "1h45 trail, 500 D+ · RPE 4–5"
+        "1h45 trail, 500 D+ · 143–153, pointes 153–163, RPE 4–5 · CX1 quadriceps/mollets · D+ facile"
       ],
       [
         "Dimanche",
-        "40 min récupération · RPE 2–3"
+        "40 min récupération · <143, RPE 2–3 · CX2 optionnel · Récupération"
       ],
       [
-        "Renforcement",
-        "2 séances courtes."
+        "Objectif ",
+        "retrouver tonicité et force en côte sans fatigue lourde."
       ],
       [
-        "Objectif",
-        "Retrouver de la tonicité sans fatigue lourde."
+        "Renforcement ",
+        "2 séances courtes max, pas de courbatures recherchées."
       ]
     ]
   },
@@ -558,39 +539,51 @@
     "start": "2026-07-06",
     "dates": "6–12 juillet",
     "type": "charge",
-    "label": "Reprise côtes",
-    "objective": "reprise côtes",
+    "label": "Charge",
+    "objective": "reprise côtes + force-endurance",
     "kmMin": 43,
     "kmMax": 43,
     "dpMin": 1000,
     "dpMax": 1000,
-    "phase": "Phase 1 — Base contrôlée",
-    "sessionsPlanned": 4,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 6,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
         "Mardi",
-        "3 × 8 min Z3 basse en terrain vallonné · RPE 6"
+        "3 × 8 min Z3 basse en vallonné · 153–163, RPE 6 · Tempo trail"
+      ],
+      [
+        "Mercredi",
+        "ZW2 45–60 min ou footing EF 45 min · 143–153, RPE 3 · Volume sans dette"
       ],
       [
         "Jeudi",
-        "10 × 1 min côte, récupération complète · RPE 7"
+        "10 × 1 min côte, récup complète · RPE 7 · CX1 si quadriceps lourds · Puissance montée"
+      ],
+      [
+        "Vendredi",
+        "Renfo B quadriceps descente, contrôlé · RPE 5 · CX3 très léger ou rien · Prévention descente"
       ],
       [
         "Samedi",
-        "2h00–2h15 trail, 700 D+ · RPE 4–5"
+        "2h00–2h15 trail, 700 D+ · 143–153, RPE 4–5 · CX1 quadriceps/mollets · Sortie D+"
       ],
       [
         "Dimanche",
-        "45–50 min EF · RPE 3"
+        "45–50 min EF ou ZW1 si fatigue · <143–153, RPE 2–3 · CX2 optionnel · Récupération"
       ],
       [
-        "Renforcement",
-        "2 séances."
+        "Objectif ",
+        "monter en charge, garder la descente propre."
       ],
       [
-        "Descente",
-        "Technique propre, pas rapide."
+        "Descente ",
+        "propre, technique, pas rapide."
       ]
     ]
   },
@@ -599,43 +592,47 @@
     "start": "2026-07-13",
     "dates": "13–19 juillet",
     "type": "charge",
-    "label": "Première vraie semaine trail",
-    "objective": "sortie longue trail",
+    "label": "Charge",
+    "objective": "première vraie semaine trail",
     "kmMin": 50,
     "kmMax": 50,
     "dpMin": 1300,
     "dpMax": 1300,
-    "phase": "Phase 1 — Base contrôlée",
-    "sessionsPlanned": 5,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 6,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
         "Mardi",
-        "4 × 6 min côte longue · RPE 7 · Z3/Z4 basse"
+        "4 × 6 min côte longue · 153–163, seuil court possible, RPE 7 · Force montée"
       ],
       [
         "Mercredi",
-        "50 min EF · RPE 3"
+        "50 min EF · 143–153, RPE 3 · Volume facile"
       ],
       [
         "Jeudi",
-        "1h avec 8 × 30 sec relance en faux plat · RPE 6–7"
+        "1h avec 8 × 30 sec relance faux plat · RPE 6–7 sur relances · CX1 léger si besoin · Tonicité"
+      ],
+      [
+        "Vendredi",
+        "Renfo A + mobilité · RPE 5 · Pas de CX3 si jambes lourdes · Force utile"
       ],
       [
         "Samedi",
-        "2h30 trail, 900–1 000 D+ · RPE 5"
+        "2h30 trail, 900–1 000 D+ · 143–153, pointes 153–163, RPE 5 · CX1 quadriceps/mollets · Long trail D+"
       ],
       [
         "Dimanche",
-        "45 min récupération · RPE 2–3"
+        "45 min récupération ou ZW1 · <143, RPE 2–3 · CX2 optionnel · Absorption"
       ],
       [
-        "Renforcement",
-        "2 séances."
-      ],
-      [
-        "Objectif",
-        "Finir la semaine stable, pas rincée."
+        "Objectif ",
+        "première semaine structurée trail, sans finir rincée."
       ]
     ]
   },
@@ -643,40 +640,56 @@
     "i": 5,
     "start": "2026-07-20",
     "dates": "20–26 juillet",
-    "type": "récupération",
-    "label": "Assimilation",
-    "objective": "assimilation",
-    "kmMin": 36,
-    "kmMax": 36,
-    "dpMin": 700,
-    "dpMax": 700,
-    "phase": "Phase 1 — Base contrôlée",
-    "sessionsPlanned": 4,
+    "type": "assimilation pré-6D",
+    "label": "Assimilation pré-6D",
+    "objective": "fraîcheur relative avant course",
+    "kmMin": 34,
+    "kmMax": 38,
+    "dpMin": 650,
+    "dpMax": 800,
+    "phase": "Phase 1 — Base + assimilation 6D",
+    "sessionsPlanned": 5,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
         "Mardi",
-        "45 min EF · RPE 3"
+        "45 min EF + 5 × 20 sec relâchées · 143–153, RPE 3–5 · Tonicité"
+      ],
+      [
+        "Mercredi",
+        "Renfo léger haut du corps / gainage ou repos · RPE 2–3 · CX2 optionnel · Stabilité"
       ],
       [
         "Jeudi",
-        "50 min vallonné facile + 6 accélérations · RPE 4–5"
+        "50 min vallonné facile, 300–400 D+ · 143–153, RPE 4 · Rappel D+"
+      ],
+      [
+        "Vendredi",
+        "Repos · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "1h30 trail facile · RPE 4"
+        "1h25–1h40 trail facile, 350–450 D+ · 143–153, RPE 4 · CX1 léger · Dernier rappel trail"
       ],
       [
         "Dimanche",
-        "35–40 min récupération · RPE 2–3"
+        "35–40 min récupération ou ZW1 · <143, RPE 2–3 · Relâchement"
       ],
       [
-        "Renforcement",
-        "1 séance légère."
+        "Objectif ",
+        "arriver fraîche sur la 6D Marathon sans casser la progression."
       ],
       [
-        "Rôle",
-        "Assimiler le premier bloc, ne pas compenser."
+        "Nutrition ",
+        "test léger 40–60 g glucides/h sur la sortie de samedi si >1h30."
+      ],
+      [
+        "Interdits ",
+        "côte dure, descente cassante, Compex force, renfo jambes lourd."
       ]
     ]
   },
@@ -684,44 +697,76 @@
     "i": 6,
     "start": "2026-07-27",
     "dates": "27 juillet–2 août",
-    "type": "charge",
-    "label": "Force montée",
-    "objective": "force montée",
-    "kmMin": 55,
-    "kmMax": 55,
-    "dpMin": 1700,
-    "dpMax": 1700,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
-    "sessionsPlanned": 5,
-    "race": null,
+    "type": "6D Marathon",
+    "label": "6D Marathon",
+    "objective": "course préparatoire montagne",
+    "kmMin": 50,
+    "kmMax": 56,
+    "dpMin": 2300,
+    "dpMax": 2600,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 4,
+    "race": "6D Marathon / 6000D",
     "seances": [
       [
+        "Lundi",
+        "Repos complet · CX4 optionnel · Fraîcheur"
+      ],
+      [
         "Mardi",
-        "5 × 5 min côte · RPE 7–8"
+        "45 min EF + 5 × 30 sec relâchées · 143–153, RPE 3–5 · Activation"
       ],
       [
         "Mercredi",
-        "55 min EF · RPE 3–4"
+        "35–40 min très facile ou repos · <143, RPE 2–3 · CX4 optionnel · Fraîcheur"
       ],
       [
         "Jeudi",
-        "1h15 avec descentes techniques courtes · RPE 5–6 musculaire"
+        "30–35 min + 4 lignes droites 15 sec · <143–153, RPE 3–5 · Tension musculaire"
+      ],
+      [
+        "Vendredi",
+        "Repos / trajet / mobilité 15 min · RPE 1 · Pas de Compex fort · Pré-course"
       ],
       [
         "Samedi",
-        "2h45 trail, 1 100–1 300 D+ · RPE 5"
+        "6D Marathon — 43 km / 2100 D+ · RPE 5–7 progressif · CX1 le soir si possible · Test montagne long"
       ],
       [
         "Dimanche",
-        "50 min récupération · RPE 2–3"
+        "Repos, marche douce ou ZW1 30–40 min · <143, RPE 1–2 · CX1 quadriceps/mollets · Déverrouillage"
       ],
       [
-        "Renforcement",
-        "2 séances, priorité quadriceps, fessiers, mollets."
+        "Départ à mi-course",
+        "RPE 5–6, aucune dette respiratoire, marche active dès que rentable"
       ],
       [
-        "Objectif",
-        "Force montée sans casse en descente."
+        "Montées longues",
+        "143–153 majoritaire, 153–163 contrôlé, pas de seuil durable"
+      ],
+      [
+        "Descentes",
+        "fluide, cadence courte, pas de chasse au chrono"
+      ],
+      [
+        "Dernier tiers",
+        "RPE 6–7 seulement si quadriceps stables"
+      ],
+      [
+        "Derniers kilomètres",
+        "engager uniquement si foulée propre et absence de douleur"
+      ],
+      [
+        "Objectif ",
+        "stress spécifique montagne contrôlé. Pas pic de forme."
+      ],
+      [
+        "Nutrition ",
+        "70 g glucides/h, prise toutes les 20 min, hydratation dès le départ."
+      ],
+      [
+        "Critère de réussite ",
+        "récupération correcte en 5 à 7 jours."
       ]
     ]
   },
@@ -729,44 +774,56 @@
     "i": 7,
     "start": "2026-08-03",
     "dates": "3–9 août",
-    "type": "charge D+",
-    "label": "Volume + quadriceps",
-    "objective": "volume + quadriceps",
-    "kmMin": 62,
-    "kmMax": 62,
-    "dpMin": 2200,
-    "dpMax": 2200,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
-    "sessionsPlanned": 5,
+    "type": "absorption 6D",
+    "label": "Absorption 6D",
+    "objective": "récupérer de la 6D",
+    "kmMin": 34,
+    "kmMax": 42,
+    "dpMin": 700,
+    "dpMax": 1000,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 4,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos complet · CX1 quadriceps/mollets · Récupération"
+      ],
+      [
         "Mardi",
-        "3 × 10 min montée soutenue · RPE 7 · Z3"
+        "Repos, marche ou ZW1 30–40 min · <143, RPE 1–2 · CX1 ou CX4 · Drainage"
       ],
       [
         "Mercredi",
-        "1h EF vallonnée · RPE 3–4"
+        "40–45 min EF très facile · <143–153, RPE 2–3 · Test jambes"
       ],
       [
         "Jeudi",
-        "8 × 2 min descente technique, remontée lente · RPE 6 musculaire"
+        "45–50 min vallonné doux + 4 × 20 sec si jambes normales · 143–153, RPE 3–5 · CX2 optionnel · Tonicité légère"
+      ],
+      [
+        "Vendredi",
+        "Repos · CX4 optionnel · Assimilation"
       ],
       [
         "Samedi",
-        "3h10 trail, 1 400–1 600 D+ · RPE 5–6"
+        "1h30–1h45 trail facile, 500–700 D+ · 143–153, RPE 4 · CX1 quadriceps/mollets · Reprise trail douce"
       ],
       [
         "Dimanche",
-        "1h récupération vallonnée · RPE 3"
+        "35–45 min récupération ou ZW1 ou repos · <143, RPE 2–3 · Fraîcheur"
       ],
       [
-        "Renforcement",
-        "2 séances, charge modérée."
+        "Objectif ",
+        "absorber. Cette semaine est volontairement contrôlée."
       ],
       [
-        "Objectif",
-        "Première vraie exposition quadriceps avant la montagne."
+        "Renforcement ",
+        "aucun renforcement jambes si courbatures. Gainage léger seulement."
+      ],
+      [
+        "Interdits ",
+        "descente engagée, côtes RPE 7–8, tempo, Compex force."
       ]
     ]
   },
@@ -774,56 +831,76 @@
     "i": 8,
     "start": "2026-08-10",
     "dates": "10–16 août",
-    "type": "amorçage montagne",
-    "label": "Amorçage avant haute montagne",
-    "objective": "arriver fraîche au bloc D+",
-    "kmMin": 52,
-    "kmMax": 56,
-    "dpMin": 1600,
-    "dpMax": 1900,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
+    "type": "relance pré-montagne",
+    "label": "Relance pré-montagne",
+    "objective": "préparer le bloc D+ sans fatigue",
+    "kmMin": 48,
+    "kmMax": 54,
+    "dpMin": 1500,
+    "dpMax": 1800,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
     "sessionsPlanned": 5,
     "race": null,
     "seances": [
       [
         "Lundi",
-        "Repos"
+        "Repos · CX4 optionnel · Assimilation"
       ],
       [
         "Mardi",
-        "5 × 4 min côte, récupération complète · RPE 7, pas RPE 8"
+        "4 × 6 min côte contrôlée · 153–163, RPE 6–7 · Force montée contrôlée"
       ],
       [
         "Mercredi",
-        "50–55 min EF · RPE 3–4 · Z1/Z2"
+        "50–55 min EF ou ZW2 50–60 min · 143–153, RPE 3–4 · Volume facile"
       ],
       [
         "Jeudi",
-        "1h technique descente souple + relances légères · RPE 5–6 musculaire"
+        "1h technique descente souple + relances légères · RPE 5 max musculaire · CX1 quadriceps · Qualité sans casse"
       ],
       [
         "Vendredi",
-        "Repos ou mobilité 20 min · RPE 1–2"
+        "Repos ou mobilité 20 min · RPE 1–2 · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "2h30 trail, 900–1 100 D+ · RPE 5"
+        "2h15–2h35 trail, 800–1 000 D+ · 143–153, RPE 5 · CX1 quadriceps/mollets · Dernier rappel D+"
       ],
       [
         "Dimanche",
-        "45–60 min très facile ou repos · RPE 2–3"
+        "45–60 min très facile ou ZW1 ou repos · <143, RPE 2–3 · CX2 optionnel · Absorption"
       ],
       [
-        "Renforcement",
-        "1 séance légère uniquement : gainage, fessiers, mollets. Pas de charge lourde jambes."
+        "Quadriceps lourds mardi",
+        "remplacer côtes par 45 min EF ou ZW1"
       ],
       [
-        "Nutrition",
-        "Commencer les tests sérieux : 60–70 g glucides/h sur la sortie longue."
+        "Descente encore subie",
+        "supprimer la séance descente du jeudi"
       ],
       [
-        "Critère réussite",
-        "Finir avec envie d'aller en montagne, pas avec les quadriceps lourds."
+        "Courbatures >72 h",
+        "limiter semaine à 40–45 km et 1 000–1 300 D+"
+      ],
+      [
+        "FC haute en EF",
+        "ZW1 ou footing Z1 uniquement"
+      ],
+      [
+        "Motivation basse + jambes lourdes",
+        "préserver S9, ne pas forcer S8"
+      ],
+      [
+        "Objectif ",
+        "relancer sans arriver entamée au bloc montagne."
+      ],
+      [
+        "Renforcement ",
+        "1 séance légère uniquement, gainage/fessiers/mollets. Pas de charge lourde."
+      ],
+      [
+        "Nutrition ",
+        "60–70 g glucides/h sur la sortie longue."
       ]
     ]
   },
@@ -833,58 +910,78 @@
     "dates": "17–23 août",
     "type": "bloc haute montagne",
     "label": "Bloc haute montagne",
-    "objective": "gros D+ spécifique",
-    "kmMin": 58,
-    "kmMax": 66,
-    "dpMin": 3500,
-    "dpMax": 4500,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
-    "sessionsPlanned": 5,
+    "objective": "gros D+ spécifique contrôlé",
+    "kmMin": 56,
+    "kmMax": 64,
+    "dpMin": 3300,
+    "dpMax": 4200,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 6,
     "race": null,
     "seances": [
       [
         "Lundi 17",
-        "Rando-course 2h30–3h, 900–1 100 D+ · RPE 4–5 · Z2/Z3 en montée"
+        "Rando-course 2h15–2h45, 700–900 D+ · 143–153, RPE 4–5 · CX1 le soir · Entrer dans le bloc"
       ],
       [
         "Mardi 18",
-        "1h45–2h15, 700–900 D+ avec 3 × 12 min marche active en pente raide · RPE 5–6"
+        "1h45–2h15, 700–850 D+ avec 2 à 3 × 12 min marche active raide · 153–163 sur blocs, RPE 5–6 · CX1 optionnel · Spécifique montée"
       ],
       [
         "Mercredi 19",
-        "1h30–2h facile, 500–700 D+ · RPE 3–4"
+        "1h30–1h50 facile, 400–600 D+ · <143–153, RPE 3–4 · CX2 ou CX4 · Absorption active"
       ],
       [
         "Jeudi 20",
-        "Grosse journée 3h30–4h30, 1 400–1 800 D+ · RPE 5–6"
+        "Grosse journée 3h15–4h15, 1 200–1 600 D+ · 143–153 majoritaire, RPE 5–6 · CX1 quadriceps/mollets · Stress principal"
       ],
       [
         "Vendredi 21",
-        "1h15–1h45 récupération montagne, 400–600 D+ · RPE 3–4"
+        "1h00–1h30 récupération montagne, 300–500 D+ · <143–153, RPE 3 · CX1 ou CX4 · Déverrouillage"
       ],
       [
         "Samedi 22",
-        "Repos ou marche très facile · RPE 1–2"
+        "Repos ou marche très facile · RPE 1–2 · CX1 si jambes lourdes · Assimilation"
       ],
       [
         "Dimanche 23",
-        "45–60 min footing Z1 si jambes correctes, sinon repos · RPE 2–3"
+        "45–60 min footing Z1 si jambes correctes, sinon repos · <143, RPE 2–3 · Retour au calme"
       ],
       [
-        "Pilotage",
-        "Durée + D+ + RPE prioritaires. Le kilométrage est un équivalent de charge, pas une cible stricte."
+        "Objectif ",
+        "bloc clé D+, marche active, résistance quadriceps, nutrition, descente contrôlée."
       ],
       [
-        "Descente",
-        "Fluidité, pas vitesse. Marcher les descentes techniques si les quadriceps lâchent."
+        "Point clé",
+        "aucune douleur ;"
       ],
       [
-        "Nutrition",
-        "60–70 g glucides/h sur sorties >2h · 500–750 ml/h · sodium à tester."
+        "Point clé",
+        "quadriceps normaux ;"
       ],
       [
-        "Renforcement",
-        "Aucun renforcement jambes. Mobilité légère seulement."
+        "Point clé",
+        "sommeil correct ;"
+      ],
+      [
+        "Point clé",
+        "descente fluide ;"
+      ],
+      [
+        "Point clé",
+        "FC stable en endurance ;"
+      ],
+      [
+        "Point clé",
+        "motivation haute sans jambes lourdes."
+      ],
+      [
+        "Renforcement ",
+        "aucun renforcement jambes."
+      ],
+      [
+        "Compex ",
+        "récupération uniquement, pas de force."
       ]
     ]
   },
@@ -892,56 +989,52 @@
     "i": 10,
     "start": "2026-08-24",
     "dates": "24–30 août",
-    "type": "absorption",
-    "label": "Absorption bloc montagne",
+    "type": "absorption montagne",
+    "label": "Absorption montagne",
     "objective": "récupérer du bloc montagne",
     "kmMin": 38,
     "kmMax": 45,
     "dpMin": 900,
     "dpMax": 1200,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
     "sessionsPlanned": 4,
     "race": null,
     "seances": [
       [
         "Lundi",
-        "Repos complet"
+        "Repos complet · CX1 ou CX4 · Récupération"
       ],
       [
         "Mardi",
-        "45 min EF · RPE 3 · Z1/Z2"
+        "45 min EF · <143–153, RPE 3 · Déverrouillage"
       ],
       [
         "Mercredi",
-        "Repos ou vélo Z1 40 min · RPE 1–2"
+        "Repos ou ZW1 40 min · <143, RPE 1–2 · CX2 optionnel · Sans impact"
       ],
       [
         "Jeudi",
-        "50 min vallonné facile + 5 × 30 sec relâchées · RPE 4–5 max"
+        "50 min vallonné facile + 5 × 30 sec relâchées · 143–153, RPE 4–5 max · Tonicité"
       ],
       [
         "Vendredi",
-        "Repos"
+        "Repos · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "1h45–2h trail facile, 600–800 D+ · RPE 4"
+        "1h45–2h trail facile, 600–800 D+ · 143–153, RPE 4 · CX1 quadriceps/mollets · Reprise trail"
       ],
       [
         "Dimanche",
-        "35–45 min récupération · RPE 2–3"
+        "35–45 min récupération ou ZW1 · <143, RPE 2–3 · Absorption"
       ],
       [
-        "Renforcement",
-        "1 séance très légère si jambes normales."
+        "Objectif ",
+        "absorber le bloc montagne avant Luzi’trail."
       ],
       [
-        "Interdits",
-        "Côtes dures, descente engagée, séance tempo longue."
-      ],
-      [
-        "Critère réussite",
-        "Jambes dynamiques avant S11."
+        "Interdits ",
+        "côtes dures, descente engagée, tempo long, Compex force."
       ]
     ]
   },
@@ -950,51 +1043,47 @@
     "start": "2026-08-31",
     "dates": "31 août–6 sept.",
     "type": "course secondaire",
-    "label": "Luzi'trail contrôlé",
+    "label": "Course secondaire",
     "objective": "Luzi’trail contrôlé",
     "kmMin": 38,
     "kmMax": 42,
     "dpMin": 800,
     "dpMax": 900,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
     "sessionsPlanned": 5,
     "race": "Luzi'trail",
     "seances": [
       [
         "Lundi",
-        "Repos"
+        "Repos · CX4 optionnel · Assimilation"
       ],
       [
         "Mardi",
-        "45 min EF + 5 × 30 sec · RPE 3–5"
+        "45 min EF + 5 × 30 sec · 143–153, RPE 3–5 · Activation"
       ],
       [
         "Mercredi",
-        "35–40 min facile · RPE 3"
+        "35–40 min facile ou ZW1 · <143–153, RPE 3 · CX2 optionnel · Fraîcheur"
       ],
       [
         "Jeudi",
-        "30 min + 4 lignes droites · RPE 3–5"
+        "30 min + 4 lignes droites · RPE 3–5 · Tension musculaire"
       ],
       [
         "Vendredi",
-        "Repos"
+        "Repos · pas de Compex fort · Fraîcheur"
       ],
       [
         "Samedi",
-        "20 min shake-out optionnel · RPE 2–3"
+        "20 min shake-out optionnel · RPE 2–3 · Déverrouillage"
       ],
       [
         "Dimanche",
-        "Luzi’trail 16 km / 410 D+ · course contrôlée"
+        "Luzi’trail 16 km / 410 D+ · course contrôlée · CX1 le soir · Test intensité"
       ],
       [
-        "Stratégie",
-        "Départ contrôlé, milieu soutenu, dernier tiers engagé seulement si jambes fraîches."
-      ],
-      [
-        "Interdit",
-        "Courir comme un objectif principal si les quadriceps gardent une trace du bloc montagne."
+        "Objectif ",
+        "test d'intensité sans dette musculaire."
       ]
     ]
   },
@@ -1003,47 +1092,63 @@
     "start": "2026-09-07",
     "dates": "7–13 sept.",
     "type": "course secondaire",
-    "label": "Trail des Dolmens",
+    "label": "Course secondaire",
     "objective": "Dolmens selon fraîcheur",
     "kmMin": 38,
     "kmMax": 42,
     "dpMin": 900,
     "dpMax": 1100,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
     "sessionsPlanned": 5,
     "race": "Trail des Dolmens",
     "seances": [
       [
         "Lundi",
-        "Repos complet"
+        "Repos complet · CX1 ou CX4 · Récup Luzi’trail"
       ],
       [
         "Mardi",
-        "40 min très facile · RPE 2–3"
+        "40 min très facile ou ZW1 · <143, RPE 2–3 · Déverrouillage"
       ],
       [
         "Mercredi",
-        "50 min EF · RPE 3–4"
+        "50 min EF · 143–153, RPE 3–4 · Base"
       ],
       [
         "Jeudi",
-        "35 min + 5 lignes droites · RPE 3–5"
+        "35 min + 5 lignes droites · RPE 3–5 · CX2 optionnel · Activation"
       ],
       [
         "Vendredi",
-        "Repos"
+        "Repos · pas de Compex fort · Fraîcheur"
       ],
       [
         "Samedi",
-        "20–25 min souple · RPE 2–3"
+        "20–25 min souple · RPE 2–3 · Pré-course"
       ],
       [
         "Dimanche",
-        "Trail des Dolmens 15 km / 370 D+ · selon fraîcheur"
+        "Trail des Dolmens 15 km / 370 D+ · selon fraîcheur · CX1 le soir · Test contrôlé"
       ],
       [
-        "Stratégie",
-        "Jambes fraîches : tempo et dernier tiers engagé. Fatigue modérée : contrôlé. Quadriceps lourds : footing avec dossard. Douleur : pas de course."
+        "Objectif ",
+        "deuxième test court, subordonné à la récupération de Luzi’trail."
+      ],
+      [
+        "Point clé",
+        "jambes fraîches : tempo, dernier tiers engagé ;"
+      ],
+      [
+        "Point clé",
+        "fatigue modérée : course contrôlée ;"
+      ],
+      [
+        "Point clé",
+        "quadriceps lourds : footing avec dossard ;"
+      ],
+      [
+        "Point clé",
+        "douleur : pas de course."
       ]
     ]
   },
@@ -1052,39 +1157,51 @@
     "start": "2026-09-14",
     "dates": "14–20 sept.",
     "type": "relance",
-    "label": "Réassimilation",
+    "label": "Relance",
     "objective": "réassimilation",
     "kmMin": 48,
     "kmMax": 52,
     "dpMin": 1300,
     "dpMax": 1300,
-    "phase": "Phase 2 — Charge, montagne & courses secondaires",
-    "sessionsPlanned": 4,
+    "phase": "Phase 2 — 6D, montagne & courses secondaires",
+    "sessionsPlanned": 5,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
         "Mardi",
-        "50 min EF · RPE 3"
+        "50 min EF · 143–153, RPE 3 · Relance douce"
+      ],
+      [
+        "Mercredi",
+        "Renfo A léger ou ZW2 45 min · 143–153 si Zwift · CX2 optionnel · Volume / stabilité"
       ],
       [
         "Jeudi",
-        "3 × 8 min Z3 basse · RPE 6"
+        "3 × 8 min Z3 basse · 153–163, RPE 6 · Tempo trail"
+      ],
+      [
+        "Vendredi",
+        "Repos ou mobilité · RPE 1–2 · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "2h15 trail, 800–1 000 D+ · RPE 4–5"
+        "2h15 trail, 800–1 000 D+ · 143–153, RPE 4–5 · CX1 quadriceps/mollets · Relance D+"
       ],
       [
         "Dimanche",
-        "45 min récupération · RPE 2–3"
+        "45 min récupération ou ZW1 · <143, RPE 2–3 · Absorption"
       ],
       [
-        "Renforcement",
-        "1 à 2 séances selon récupération."
+        "Objectif ",
+        "repartir sans dette des deux courses secondaires."
       ],
       [
-        "Objectif",
-        "Repartir sans dette des deux courses secondaires."
+        "Renforcement ",
+        "1 séance, 2 seulement si récupération excellente."
       ]
     ]
   },
@@ -1093,47 +1210,71 @@
     "start": "2026-09-21",
     "dates": "21–27 sept.",
     "type": "spécifique",
-    "label": "Entrée spécifique TL50",
-    "objective": "entrée bloc TransLantau",
-    "kmMin": 65,
+    "label": "Spécifique",
+    "objective": "entrée bloc TransLantau modulable",
+    "kmMin": 58,
     "kmMax": 65,
-    "dpMin": 2600,
+    "dpMin": 2000,
     "dpMax": 2600,
     "phase": "Phase 3 — Spécifique TransLantau",
-    "sessionsPlanned": 5,
+    "sessionsPlanned": 6,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos complet · CX4 optionnel · Assimilation"
+      ],
+      [
         "Mardi",
-        "3 × 12 min montée soutenue · RPE 7 · Z3"
+        "3 × 12 min montée soutenue · 153–163, RPE 7 · Marche/course montée"
       ],
       [
         "Mercredi",
-        "1h EF vallonnée · RPE 3–4"
+        "1h EF vallonnée ou ZW2 60 min si fatigue impact · 143–153, RPE 3–4 · Volume facile"
       ],
       [
         "Jeudi",
-        "1h20 descente technique + relances · RPE 5–6 musculaire"
+        "1h20 descente technique + relances · RPE 5–6 musculaire · CX1 quadriceps · Quadriceps + relance"
+      ],
+      [
+        "Vendredi",
+        "Renfo léger, pas d'excentrique lourd · RPE 4–5 · pas de CX3 sauf jambes parfaites · Stabilité"
       ],
       [
         "Samedi",
-        "3h30 trail, 1 500–1 700 D+ · RPE 5–6"
+        "3h15–3h30 trail, 1 300–1 700 D+ · RPE 5–6 · CX1 quadriceps/mollets · Sortie spécifique"
       ],
       [
         "Dimanche",
-        "1h10 récupération vallonnée · RPE 3"
+        "1h00–1h10 récupération vallonnée ou ZW1 · <143–153, RPE 3 · CX2 optionnel · Back-to-back léger"
       ],
       [
-        "Renforcement",
-        "2 séances."
+        "Jambes fraîches",
+        "65 km / 2 600 D+ OK"
       ],
       [
-        "Nutrition",
+        "Jambes moyennes",
+        "58–62 km / 2 000–2 300 D+"
+      ],
+      [
+        "Quadriceps lourds",
+        "50–55 km / 1 500–1 800 D+"
+      ],
+      [
+        "Douleur",
+        "pas de bloc spécifique, récupération prioritaire"
+      ],
+      [
+        "Objectif ",
+        "entrer dans le bloc spécifique sans payer les courses secondaires."
+      ],
+      [
+        "Nutrition ",
         "70 g glucides/h sur la sortie longue."
       ],
       [
-        "Matériel",
-        "Commencer sac, flasques, chaussures, éventuellement bâtons."
+        "Matériel ",
+        "sac, flasques, chaussures, éventuellement bâtons."
       ]
     ]
   },
@@ -1154,39 +1295,43 @@
     "seances": [
       [
         "Lundi",
-        "Repos"
+        "Repos · CX4 optionnel · Assimilation"
       ],
       [
         "Mardi",
-        "1h25 avec 5 × 6 min côte · RPE 7–8"
+        "1h25 avec 5 × 6 min côte · 153–163, RPE 7–8 · Force montée"
       ],
       [
         "Mercredi",
-        "1h05 EF vallonnée · RPE 3–4"
+        "1h05 EF vallonnée · 143–153, RPE 3–4 · Volume facile"
       ],
       [
         "Jeudi",
-        "1h20 descente technique + relances · RPE 6 musculaire"
+        "1h20 descente technique + relances · RPE 6 musculaire · CX1 quadriceps · Quadriceps"
       ],
       [
         "Vendredi",
-        "Repos ou vélo Z1 · RPE 1–2"
+        "Repos ou ZW1 30–40 min · <143, RPE 1–2 · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "4h15–4h30 trail, 1 900–2 100 D+ · RPE 5–6"
+        "4h15–4h30 trail, 1 900–2 100 D+ · 143–153 majoritaire, RPE 5–6 · CX1 quadriceps/mollets · Gros stress contrôlé"
       ],
       [
         "Dimanche",
-        "1h30–1h45 vallonné, 600–800 D+ · RPE 4"
+        "1h30–1h45 vallonné, 600–800 D+ · 143–153, RPE 4 · CX2 optionnel · Back-to-back"
       ],
       [
-        "Renforcement",
-        "1 à 2 séances selon fatigue."
+        "Objectif ",
+        "gros bloc spécifique, finir fatiguée mais fonctionnelle."
       ],
       [
-        "Objectif",
-        "Finir fatiguée, mais pas cassée."
+        "Renforcement ",
+        "1 séance maximum si fatigue normale. Pas d'excentrique lourd ajouté."
+      ],
+      [
+        "Nutrition ",
+        "70–90 g glucides/h sur la sortie longue."
       ]
     ]
   },
@@ -1206,32 +1351,40 @@
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos complet · CX1 ou CX4 · Récupération"
+      ],
+      [
         "Mardi",
-        "50 min EF · RPE 3"
+        "50 min EF · 143–153, RPE 3 · Relance"
       ],
       [
         "Mercredi",
-        "45 min facile · RPE 2–3"
+        "45 min facile ou ZW1 40 min · <143–153, RPE 2–3 · CX2 optionnel · Volume léger"
       ],
       [
         "Jeudi",
-        "1h avec 6 × 1 min côte facile · RPE 5–6 max"
+        "1h avec 6 × 1 min côte facile · RPE 5–6 max · Tonicité"
+      ],
+      [
+        "Vendredi",
+        "Repos ou mobilité · RPE 1 · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "1h45–2h trail facile · RPE 4"
+        "1h45–2h trail facile · 143–153, RPE 4 · CX1 quadriceps/mollets · Trail doux"
       ],
       [
         "Dimanche",
-        "40–45 min récupération · RPE 2–3"
+        "40–45 min récupération ou ZW1 · <143, RPE 2–3 · Fraîcheur"
       ],
       [
-        "Renforcement",
-        "1 séance légère."
+        "Objectif ",
+        "absorber S15 et préparer S17."
       ],
       [
-        "Interdiction",
-        "Ne pas transformer cette semaine en charge. Elle prépare S17."
+        "Renforcement ",
+        "1 séance légère maximum."
       ]
     ]
   },
@@ -1240,7 +1393,7 @@
     "start": "2026-10-12",
     "dates": "12–18 oct.",
     "type": "pic principal",
-    "label": "Semaine reine",
+    "label": "Pic principal",
     "objective": "semaine reine",
     "kmMin": 80,
     "kmMax": 82,
@@ -1252,39 +1405,71 @@
     "seances": [
       [
         "Lundi",
-        "Repos complet"
+        "Repos complet · CX4 optionnel · Préparer le pic"
       ],
       [
         "Mardi",
-        "1h30 côtes longues, 800–900 D+ · RPE 7 · Z3/Z4 basse"
+        "1h30 côtes longues, 800–900 D+ · 153–163, seuil court possible, RPE 7 · Montée forte"
       ],
       [
         "Mercredi",
-        "1h10 EF vallonnée, 300–400 D+ · RPE 3–4"
+        "1h10 EF vallonnée, 300–400 D+ · 143–153, RPE 3–4 · Volume facile"
       ],
       [
         "Jeudi",
-        "1h20 descente technique + relances, 600–700 D+ · RPE 6 musculaire"
+        "1h20 descente technique + relances, 600–700 D+ · RPE 6 musculaire · CX1 quadriceps · Descente + relance"
       ],
       [
         "Vendredi",
-        "Repos ou vélo Z1 · RPE 1–2"
+        "Repos ou ZW1 30 min · <143, RPE 1–2 · CX4 optionnel · Assimilation"
       ],
       [
         "Samedi",
-        "4h45–5h15 trail, 2 200–2 500 D+ · RPE 5–6"
+        "4h45–5h15 trail, 2 200–2 500 D+ · 143–153 majoritaire, RPE 5–6 · CX1 quadriceps/mollets · Répétition générale"
       ],
       [
         "Dimanche",
-        "1h30–1h45 rando-course, 600–800 D+ · RPE 4"
+        "1h30–1h45 rando-course, 600–800 D+ · 143–153, RPE 4 · CX1 ou CX2 · Back-to-back contrôlé"
       ],
       [
-        "Validations",
-        "Marche forte en montée, descente fluide, relance sans crampe, nutrition complète, sac/chaussures/flasques/bâtons, rester fonctionnelle le dimanche."
+        "Objectif ",
+        "répétition générale TransLantau. Semaine clé du plan."
       ],
       [
-        "Nutrition",
-        "70–90 g glucides/h. Répétition générale."
+        "Point clé",
+        "marcher fort en montée ;"
+      ],
+      [
+        "Point clé",
+        "descendre fluide sans subir les quadriceps ;"
+      ],
+      [
+        "Point clé",
+        "relancer sans crampe ;"
+      ],
+      [
+        "Point clé",
+        "tester nutrition complète ;"
+      ],
+      [
+        "Point clé",
+        "valider sac, chaussures, flasques, bâtons si utilisés ;"
+      ],
+      [
+        "Point clé",
+        "rester fonctionnelle le dimanche."
+      ],
+      [
+        "Nutrition ",
+        "70–90 g glucides/h."
+      ],
+      [
+        "Renforcement ",
+        "pas de renfo jambes lourd."
+      ],
+      [
+        "Compex ",
+        "récupération uniquement."
       ]
     ]
   },
@@ -1292,44 +1477,92 @@
     "i": 18,
     "start": "2026-10-19",
     "dates": "19–25 oct.",
-    "type": "consolidation",
-    "label": "Dernier gros spécifique",
-    "objective": "dernier gros spécifique",
-    "kmMin": 68,
+    "type": "consolidation modulable",
+    "label": "Consolidation modulable",
+    "objective": "consolider selon récupération",
+    "kmMin": 50,
     "kmMax": 72,
-    "dpMin": 3000,
+    "dpMin": 1500,
     "dpMax": 3300,
     "phase": "Phase 3 — Spécifique TransLantau",
     "sessionsPlanned": 5,
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos complet · CX1 ou CX4 · Absorption"
+      ],
+      [
         "Mardi",
-        "4 × 10 min montée Z3 · RPE 7"
+        "4 × 10 min montée Z3 · 153–163, RPE 7 · Consolidation montée"
       ],
       [
         "Mercredi",
-        "1h EF · RPE 3–4"
+        "1h EF · 143–153, RPE 3–4 · Volume facile"
       ],
       [
         "Jeudi",
-        "1h15 descente + relances · RPE 5–6"
+        "1h15 descente + relances · RPE 5–6 · CX1 quadriceps · Qualité descente"
+      ],
+      [
+        "Vendredi",
+        "Repos ou ZW1 30–40 min · <143 · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "3h30–4h trail, 1 500–1 800 D+ · RPE 5"
+        "3h30–4h trail, 1 500–1 800 D+ · RPE 5 · CX1 quadriceps/mollets · Dernier gros spécifique"
       ],
       [
         "Dimanche",
-        "1h10–1h20 récupération vallonnée · RPE 3"
+        "1h10–1h20 récupération vallonnée · RPE 3 · CX2 optionnel · Absorption"
       ],
       [
-        "Renforcement",
-        "1 séance."
+        "Très bonne récupération",
+        "68–72 km / 3 000–3 300 D+"
       ],
       [
-        "Objectif",
-        "Consolider, pas refaire S17."
+        "Fatigue normale",
+        "60–65 km / 2 300–2 700 D+"
+      ],
+      [
+        "Fatigue musculaire nette",
+        "50–55 km / 1 500–2 000 D+"
+      ],
+      [
+        "Quadriceps touchés",
+        "pas de descente technique, Zwift Z1/EF possible"
+      ],
+      [
+        "Objectif ",
+        "consolider, pas refaire S17. Cette semaine est pilotée par la récupération réelle."
+      ],
+      [
+        "Point clé",
+        "Mardi : 50–60 min EF vallonnée, pas de blocs longs."
+      ],
+      [
+        "Point clé",
+        "Mercredi : ZW1 ou ZW2 40–50 min."
+      ],
+      [
+        "Point clé",
+        "Jeudi : 45–60 min technique facile, pas de descente engagée."
+      ],
+      [
+        "Point clé",
+        "Samedi : 2h15–3h trail, 900–1 300 D+."
+      ],
+      [
+        "Point clé",
+        "Dimanche : repos, marche ou ZW1."
+      ],
+      [
+        "Renforcement ",
+        "0 à 1 séance très légère."
+      ],
+      [
+        "Compex ",
+        "récupération uniquement."
       ]
     ]
   },
@@ -1349,32 +1582,40 @@
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos · CX4 optionnel · Fraîcheur"
+      ],
+      [
         "Mardi",
-        "3 × 8 min Z3 sur terrain vallonné · RPE 6"
+        "3 × 8 min Z3 terrain vallonné · 153–163, RPE 6 · Rythme"
       ],
       [
         "Mercredi",
-        "50 min EF · RPE 3"
+        "50 min EF · 143–153, RPE 3 · Volume léger"
       ],
       [
         "Jeudi",
-        "8 × 1 min côte, récupération complète · RPE 6–7"
+        "8 × 1 min côte, récup complète · RPE 6–7 · CX1 léger si besoin · Tonicité"
+      ],
+      [
+        "Vendredi",
+        "Repos ou ZW1 30 min · <143 · CX4 optionnel · Fraîcheur"
       ],
       [
         "Samedi",
-        "2h15–2h30 trail facile · RPE 4"
+        "2h15–2h30 trail facile · 143–153, RPE 4 · CX1 quadriceps/mollets · Dernière sortie moyenne"
       ],
       [
         "Dimanche",
-        "40–45 min récupération · RPE 2–3"
+        "40–45 min récupération ou repos · <143, RPE 2–3 · Fraîcheur"
       ],
       [
-        "Renforcement",
-        "1 séance très légère."
+        "Objectif ",
+        "faire baisser la fatigue tout en gardant du rythme."
       ],
       [
-        "Objectif",
-        "Fatigue en baisse nette."
+        "Renforcement ",
+        "1 séance très légère, gainage/mobilité uniquement."
       ]
     ]
   },
@@ -1383,7 +1624,7 @@
     "start": "2026-11-02",
     "dates": "2–8 nov.",
     "type": "affûtage 2",
-    "label": "Fraîcheur",
+    "label": "Affûtage 2",
     "objective": "fraîcheur",
     "kmMin": 32,
     "kmMax": 36,
@@ -1394,28 +1635,40 @@
     "race": null,
     "seances": [
       [
+        "Lundi",
+        "Repos · CX4 optionnel · Assimilation"
+      ],
+      [
         "Mardi",
-        "45 min EF + 6 lignes droites · RPE 3–5"
+        "45 min EF + 6 lignes droites · 143–153, RPE 3–5 · Activation"
+      ],
+      [
+        "Mercredi",
+        "Repos ou ZW1 30 min · <143 · CX4 optionnel · Récupération"
       ],
       [
         "Jeudi",
-        "35–40 min avec 5 × 1 min côte · RPE 5–6"
+        "35–40 min avec 5 × 1 min côte · RPE 5–6 · Tension musculaire"
+      ],
+      [
+        "Vendredi",
+        "Repos · pas de Compex fort · Fraîcheur"
       ],
       [
         "Samedi",
-        "1h20–1h30 trail facile · RPE 3–4"
+        "1h20–1h30 trail facile · 143–153, RPE 3–4 · CX1 léger si besoin · Dernière sortie trail"
       ],
       [
         "Dimanche",
-        "35 min récupération ou repos · RPE 2"
+        "35 min récupération ou repos · <143, RPE 2 · Fraîcheur"
       ],
       [
-        "Renforcement",
-        "Mobilité + gainage léger uniquement."
+        "Objectif ",
+        "fraîcheur, tonicité, zéro dette."
       ],
       [
-        "Objectif",
-        "Jambes fraîches, pas d'entraînement pour se rassurer."
+        "Renforcement ",
+        "mobilité + gainage léger uniquement."
       ]
     ]
   },
@@ -1436,31 +1689,35 @@
     "seances": [
       [
         "Lundi",
-        "Repos"
+        "Repos · CX4 optionnel · Fraîcheur"
       ],
       [
         "Mardi",
-        "40 min EF + 5 lignes droites · RPE 3–5"
+        "40 min EF + 5 lignes droites · 143–153, RPE 3–5 · Activation"
       ],
       [
         "Mercredi",
-        "30–35 min facile · RPE 2–3"
+        "30–35 min facile · <143–153, RPE 2–3 · CX4 optionnel · Déverrouillage"
       ],
       [
         "Jeudi",
-        "Repos / voyage / mobilité · RPE 1"
+        "Repos / voyage / mobilité · RPE 1 · pas de Compex nouveau · Préserver"
       ],
       [
         "Vendredi",
-        "20 min shake-out si besoin · RPE 2–3"
+        "20 min shake-out si besoin · RPE 2–3 · rien ou CX4 très léger · Tension légère"
       ],
       [
         "Samedi",
-        "TransLantau50 · course objectif"
+        "TransLantau50 · Course objectif · CX1 après course si disponible · Performance"
       ],
       [
-        "Objectif",
-        "Arriver avec de la tension musculaire, mais aucune fatigue."
+        "Objectif ",
+        "arriver avec de la tension musculaire, mais aucune fatigue."
+      ],
+      [
+        "Race week ",
+        "pas de nouveauté nutrition, matériel, chaussures, Compex ou Zwift."
       ]
     ]
   }
@@ -1470,21 +1727,21 @@
   {
     "id": "s0",
     "label": "S0",
-    "name": "Reprise post-Saint-Jacques",
+    "name": "Reprise post-course",
     "from": 0,
     "to": 0
   },
   {
     "id": "p1",
     "label": "Phase 1",
-    "name": "Base contrôlée + assimilation",
+    "name": "Base + assimilation pré-6D",
     "from": 1,
     "to": 5
   },
   {
     "id": "p2",
     "label": "Phase 2",
-    "name": "Charge, bloc montagne + courses secondaires",
+    "name": "6D, montagne & courses secondaires",
     "from": 6,
     "to": 13
   },
@@ -1574,7 +1831,7 @@
   function freshnessColor(v){return v >= 7 ? 'green' : v >= 4 ? 'orange' : 'red';}
   function typeColor(type){
     const t = type.toLowerCase();
-    if(t.includes('récup')) return getCSS('--green');
+    if(t.includes('récup') || t.includes('absorption')) return getCSS('--green');
     if(t.includes('pic') || t.includes('bloc haute montagne')) return getCSS('--blue');
     if(t.includes('affût') || t.includes('affut')) return getCSS('--light-gray');
     if(t.includes('course') || t.includes('race')) return getCSS('--orange-bright');
@@ -1587,14 +1844,11 @@
     initMantras();
     initCountdowns();
     initJournalForm();
-    initRadar();
-    initQuotes();
     initNutrition();
     bindGlobalEvents();
     renderAll();
     setInterval(updateCountdowns, 1000);
     setInterval(rotateMantra, 30000);
-    setInterval(nextQuote, 5000);
   }
 
   function initMantras(){
@@ -1621,6 +1875,7 @@
     byId('cdHours').textContent = String(hours).padStart(2,'0');
     byId('cdMinutes').textContent = String(minutes).padStart(2,'0');
     byId('cdSeconds').textContent = String(seconds).padStart(2,'0');
+    updateMiniRace('sixd', 'sixdCounter', 'sixdDays');
     updateMiniRace('luzitrail', 'luzitrailCounter', 'luzitrailDays');
     updateMiniRace('dolmens', 'dolmensCounter', 'dolmensDays');
   }
@@ -1657,7 +1912,7 @@
     });
     byId('resetDemoBtn').addEventListener('click', () => {
       if(confirm('Supprimer les données locales de suivi TL50 ?')){
-        [STORAGE.weeks, STORAGE.radar, STORAGE.journal, STORAGE.freshness].forEach(k => localStorage.removeItem(k));
+        [STORAGE.weeks, STORAGE.journal, STORAGE.freshness].forEach(k => localStorage.removeItem(k));
         location.reload();
       }
     });
@@ -1670,7 +1925,6 @@
     renderCharts();
     renderTimeline();
     renderBlocks();
-    renderRadarChart();
     renderJournal();
     renderFooter();
     renderSideProgress();
@@ -1699,7 +1953,6 @@
     renderNutrition();
     renderProjectionAndLoad();
     renderAlerts();
-    renderPhaseDashboard();
   }
 
   function renderTopKpis(){
@@ -1713,7 +1966,7 @@
     byId('kpiDaysMain').textContent = fmt(daysMain);
     byId('kpiWeeksMain').textContent = fmt(Math.max(0, Math.ceil(daysMain / 7)));
     const secParts = [];
-    ['luzitrail','dolmens'].forEach(k => {
+    ['sixd','luzitrail','dolmens'].forEach(k => {
       const d = daysUntil(raceDate(k));
       if(d >= 0) secParts.push(`<div class="row"><span>${RACES[k].name}</span><strong>${fmt(d)} j</strong></div>`);
     });
@@ -1848,10 +2101,6 @@
     byId('alerts').innerHTML = alerts.map(a => `<div class="alert ${a.color}">${a.text}</div>`).join('');
   }
 
-  function renderPhaseDashboard(){
-    const html = PHASES.map(p => phaseCardHTML(p, true)).join('');
-    byId('phaseDashboard').innerHTML = html;
-  }
   function phaseRange(p){return PLAN.slice(p.from, p.to + 1);}
   function phaseStatus(p){
     const now = new Date();
@@ -1887,7 +2136,7 @@
         const prev = i === 0 ? x.left : (x.getPixelForValue(i-1) + xCenter) / 2;
         const next = i === PLAN.length-1 ? x.right : (xCenter + x.getPixelForValue(i+1)) / 2;
         let fill = null;
-        if(w.type.includes('récup')) fill = 'rgba(29,179,122,.10)';
+        if(w.type.includes('récup') || w.type.includes('absorption')) fill = 'rgba(29,179,122,.10)';
         if(w.type.includes('pic') || w.type.includes('bloc haute montagne')) fill = 'rgba(46,143,224,.12)';
         if(w.type.includes('affût')) fill = 'rgba(210,215,224,.08)';
         if(fill){ctx.save();ctx.fillStyle = fill;ctx.fillRect(prev,chartArea.top,next-prev,chartArea.bottom-chartArea.top);ctx.restore();}
@@ -1896,7 +2145,7 @@
     afterDatasetsDraw(chart,args,opts){
       const {ctx, chartArea, scales} = chart;
       if(!chartArea || !scales.x) return;
-      const events = [{i:11,label:'Luzi'}, {i:12,label:'Dolmens'}, {i:21,label:'TL50'}];
+      const events = [{i:6,label:'6D'}, {i:11,label:'Luzi'}, {i:12,label:'Dolmens'}, {i:21,label:'TL50'}];
       events.forEach(e => {
         const x = scales.x.getPixelForValue(e.i);
         ctx.save();
@@ -2082,8 +2331,7 @@
         radarStore.current[q] = v;
         e.target.nextElementSibling.textContent = v;
         saveJSON(STORAGE.radar, radarStore);
-        renderRadarChart();
-      });
+          });
     });
     byId('saveRadar').addEventListener('click', () => {
       const previous = loadJSON(STORAGE.radar, radarStore)?.current || radarStore.current;
@@ -2091,8 +2339,7 @@
       radarStore.current = {...radarStore.current};
       radarStore.savedAt = new Date().toISOString();
       saveJSON(STORAGE.radar, radarStore);
-      renderRadarChart();
-    });
+      });
   }
   function renderRadarChart(){
     if(typeof Chart === 'undefined') return;
