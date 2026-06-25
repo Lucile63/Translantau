@@ -178,14 +178,13 @@
     .block-card{background:#0F1319;border:1px solid var(--line);border-radius:var(--radius);padding:16px;min-height:210px}
     .block-card h3{font-family:'Bebas Neue';font-size:32px;margin:0 0 6px}.block-card .metrics{display:grid;gap:7px;margin:12px 0;color:var(--muted);font-size:13px}.block-card strong{color:#fff}
     .radar-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:12px}.slider-stack{display:grid;gap:12px}.quality-row{display:grid;grid-template-columns:135px 1fr 34px;align-items:center;gap:10px}.quality-row span{font-weight:900;color:#fff}.quality-row output{font-family:'Bebas Neue';font-size:26px;color:var(--orange)}.quality-row input{accent-color:var(--orange)}
-    .journal-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:12px}.journal-list{display:grid;gap:10px;max-height:590px;overflow:auto;padding-right:4px}.journal-item{background:#0B0E13;border:1px solid var(--line);border-radius:var(--radius);padding:12px}.journal-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px}.journal-head strong{font-size:14px}.journal-note{color:var(--light-gray);font-size:13px;line-height:1.5;white-space:pre-wrap}.journal-meta{color:var(--muted);font-size:12px;margin-top:8px}
     .rules{padding:18px}.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.rules h3{font-family:'Bebas Neue';font-size:32px;margin:0 0 10px}.rule-priority{display:grid;gap:8px;counter-reset:p}.rule-priority div{counter-increment:p;background:#0B0E13;border:1px solid var(--line);border-radius:var(--radius);padding:10px;color:#fff}.rule-priority div:before{content:counter(p);display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;background:var(--orange);font-weight:900;color:#fff;border-radius:var(--radius)}
     .adjust-table{width:100%;border-collapse:collapse;font-size:13px}.adjust-table th,.adjust-table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}.adjust-table th{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:11px}.key-rule{font-family:'Bebas Neue';font-size:34px;line-height:1.05;margin:10px 0;color:#fff;border-left:3px solid var(--green);padding-left:12px}
     .quote-panel{padding:26px;overflow:hidden}.quote-frame{position:relative;min-height:160px}.quote-track{display:flex;transition:transform .45s ease}.quote{min-width:100%;font-family:'Bebas Neue';font-size:clamp(42px,6vw,86px);line-height:.95;color:#fff;padding-right:20px}.quote small{display:block;font-family:Inter;font-size:13px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:12px}.quote-controls{display:flex;gap:8px;margin-top:16px}.quote-controls button{background:#090B0E;border:1px solid var(--line);color:#fff;border-radius:var(--radius);padding:10px 12px;font-weight:900}
     .footer-card{margin-top:30px;padding:24px;display:grid;grid-template-columns:1fr .9fr;gap:20px;align-items:center;overflow:hidden}.footer-title{font-family:'Bebas Neue';font-size:clamp(52px,8vw,110px);line-height:.85}.footer-metrics{color:var(--muted);font-size:14px;line-height:1.7}.profile-svg{width:100%;height:170px}.profile-line{stroke:var(--orange);stroke-width:4;fill:none;stroke-dasharray:900;stroke-dashoffset:900;animation:drawProfile 6s ease-in-out infinite}.profile-fill{fill:rgba(232,98,42,.08)}@keyframes drawProfile{0%{stroke-dashoffset:900}45%,70%{stroke-dashoffset:0}100%{stroke-dashoffset:-900}}
     .muted{color:var(--muted)}.hidden{display:none!important}.status-done{color:var(--green)}.status-now{color:var(--orange)}.status-future{color:var(--muted)}
     .type-recuperation,.type-récupération,.type-recuperation-active,.type-récupération-active,.type-recuperation-obligatoire,.type-récupération-obligatoire{color:var(--green);border-color:rgba(29,179,122,.45)}.type-charge,.type-charge-legere,.type-charge-légère,.type-charge-d,.type-amorcage-montagne,.type-amorçage-montagne,.type-absorption,.type-reprise-post-course,.type-relance,.type-specifique,.type-spécifique,.type-gros-bloc,.type-consolidation{color:var(--orange);border-color:rgba(232,98,42,.45)}.type-pic-1,.type-pic-principal,.type-bloc-haute-montagne{color:var(--blue);border-color:rgba(46,143,224,.45)}.type-course,.type-course-secondaire,.type-race-week{color:var(--orange-bright);border-color:rgba(255,118,47,.6)}.type-affutage-1,.type-affûtage-1,.type-affutage-2,.type-affûtage-2{color:var(--light-gray);border-color:rgba(210,215,224,.5)}
-    @media (max-width:1150px){.hero,.chart-grid,.radar-grid,.journal-grid,.footer-card{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:repeat(6,1fr)}.span-2,.span-3,.span-4{grid-column:span 3}.span-6,.span-8,.span-12{grid-column:span 6}.phase-grid,.blocks-grid{grid-template-columns:repeat(2,1fr)}.rules-grid{grid-template-columns:1fr}}
+    @media (max-width:1150px){.hero,.chart-grid,.radar-grid,.footer-card{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:repeat(6,1fr)}.span-2,.span-3,.span-4{grid-column:span 3}.span-6,.span-8,.span-12{grid-column:span 6}.phase-grid,.blocks-grid{grid-template-columns:repeat(2,1fr)}.rules-grid{grid-template-columns:1fr}}
     @media (max-width:720px){.page{width:calc(100% - 22px);padding-left:4px}.hero-main{padding:20px}.hero{min-height:auto}.countdown-grid{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr}.span-2,.span-3,.span-4,.span-6,.span-8,.span-12{grid-column:span 1}.phase-grid,.blocks-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.section-head{display:block}.week-card{min-width:210px}.quality-row{grid-template-columns:110px 1fr 30px}.footer-title{font-size:56px}.profile-svg{height:120px}}
     .type-relance-tonicite-legere,.type-relance-tonicité-légère,.type-charge-specifique-6000d-1,.type-charge-specifique-6000d-2,.type-semaine-cle-6000d,.type-semaine-clé-6000d,.type-assimilation-pre-6000d,.type-assimilation-pré-6000d,.type-relance-pre-montagne-conditionnelle,.type-relance-pré-montagne-conditionnelle,.type-specifique,.type-spécifique{color:var(--orange);border-color:rgba(232,98,42,.45)}.type-6000d-objectif-a-intermediaire,.type-6000d-objectif-a-intermédiaire,.type-pic-principal-translantau{color:var(--orange-bright);border-color:rgba(255,118,47,.65)}.type-absorption-stricte-6000d,.type-absorption-montagne{color:var(--green);border-color:rgba(29,179,122,.45)}
     @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
@@ -228,27 +227,6 @@
     <section class="section" id="timeline-section">
       <div class="section-head"><div><h2 class="section-title">PLANNING SEMAINES</h2><p class="section-sub">Cliquer une semaine pour voir les séances et saisir les données réelles.</p></div></div>
       <div id="timeline" class="timeline" aria-label="Timeline semaines"></div>
-    </section>
-
-    <section class="section" id="journal">
-      <div class="section-head"><div><h2 class="section-title">JOURNAL DE BORD</h2><p class="section-sub">Entrées stockées localement, filtrables par type et supprimables.</p></div></div>
-      <div class="journal-grid">
-        <form id="journalForm" class="card">
-          <div class="form-grid" style="grid-template-columns:1fr 1fr">
-            <label>Date<input id="journalDate" type="date"></label>
-            <label>Type<select id="journalType"></select></label>
-            <label>Ressenti<select id="journalMood"><option>😴</option><option>😐</option><option selected>💪</option><option>🔥</option></select></label>
-            <label>Km<input id="journalKm" type="number" min="0" step="0.1"></label>
-            <label>D+<input id="journalDp" type="number" min="0" step="1"></label>
-          </div>
-          <label style="margin-top:10px">Notes<textarea id="journalNotes" placeholder="Ressenti, douleur, nutrition, météo, descente, quadriceps..."></textarea></label>
-          <div class="btn-row"><button class="btn" type="submit">Ajouter au journal</button></div>
-        </form>
-        <div class="card">
-          <div class="btn-row" style="margin-top:0;margin-bottom:10px"><label style="max-width:240px">Filtrer<select id="journalFilter"></select></label></div>
-          <div id="journalList" class="journal-list"></div>
-        </div>
-      </div>
     </section>
 
     <section class="section" id="volume-section">
@@ -305,7 +283,6 @@
   const STORAGE = {
     weeks: 'tl50_week_data',
     radar: 'tl50_radar',
-    journal: 'tl50_journal',
     freshness: 'tl50_fraicheur'
   };
   const RACES = {
@@ -331,7 +308,6 @@
     "La performance de demain se construit dans l'obscurité d'aujourd'hui.",
     'Chaque mètre de D+ est un investissement.'
   ];
-  const JOURNAL_TYPES = ['EF','Trail','Côtes','Descentes','Tempo','PPG-Renfo','Repos','Course','Autre'];
   const QUALITIES = ['Endurance','Descentes','VMA','Force musculaire','Mental','Récupération'];
 
   const PLAN = [
@@ -1579,7 +1555,6 @@
 
   let weekData = loadJSON(STORAGE.weeks, {});
   let radarStore = loadJSON(STORAGE.radar, null) || {current: defaultRadar(), previous:null, savedAt:null};
-  let journal = loadJSON(STORAGE.journal, []);
   let freshnessStore = loadJSON(STORAGE.freshness, {weeks:{}, nutritionStatusOverride:null});
   let volumeChart, atlCtlChart, radarChart;
   let activeWeekIndex = 0;
@@ -1659,7 +1634,6 @@
     activeWeekIndex = detectActiveWeek();
     initMantras();
     initCountdowns();
-    initJournalForm();
     bindGlobalEvents();
     renderAll();
     setInterval(updateCountdowns, 1000);
@@ -1725,7 +1699,6 @@
     renderCharts();
     renderTimeline();
     renderBlocks();
-    renderJournal();
     renderSideProgress();
   }
 
@@ -2244,44 +2217,6 @@
     byId('radarSavedAt').textContent = radarStore.savedAt ? `Dernière sauvegarde : ${new Date(radarStore.savedAt).toLocaleString('fr-FR')}` : 'Non sauvegardé.';
   }
 
-  function initJournalForm(){
-    const today = new Date().toISOString().slice(0,10);
-    byId('journalDate').value = today;
-    byId('journalType').innerHTML = JOURNAL_TYPES.map(t => `<option>${t}</option>`).join('');
-    byId('journalFilter').innerHTML = ['Tous',...JOURNAL_TYPES].map(t => `<option>${t}</option>`).join('');
-    byId('journalForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const entry = {
-        id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-        date:byId('journalDate').value || today,
-        type:byId('journalType').value,
-        mood:byId('journalMood').value,
-        km:Number(byId('journalKm').value || 0),
-        dp:Number(byId('journalDp').value || 0),
-        notes:byId('journalNotes').value.trim(),
-        createdAt:new Date().toISOString()
-      };
-      journal.push(entry);
-      saveJSON(STORAGE.journal, journal);
-      byId('journalKm').value = ''; byId('journalDp').value = ''; byId('journalNotes').value = '';
-      renderJournal();
-    });
-    byId('journalFilter').addEventListener('change', renderJournal);
-  }
-  function renderJournal(){
-    const filter = byId('journalFilter')?.value || 'Tous';
-    const filtered = journal.filter(j => filter === 'Tous' || j.type === filter).sort((a,b)=>new Date(b.date) - new Date(a.date) || new Date(b.createdAt) - new Date(a.createdAt));
-    byId('journalList').innerHTML = filtered.length ? filtered.map(j => `<article class="journal-item">
-      <div class="journal-head"><strong>${j.mood} ${j.type} · ${new Date(j.date + 'T00:00:00').toLocaleDateString('fr-FR')}</strong><button class="btn gray" data-del-journal="${j.id}">Supprimer</button></div>
-      <div class="journal-note">${escapeHTML(j.notes || '—')}</div>
-      <div class="journal-meta">${fmt(j.km,1)} km · ${fmt(j.dp,0)} m D+ · ajouté le ${new Date(j.createdAt).toLocaleString('fr-FR')}</div>
-    </article>`).join('') : '<div class="muted">Aucune entrée.</div>';
-    document.querySelectorAll('[data-del-journal]').forEach(btn => btn.addEventListener('click', () => {
-      journal = journal.filter(j => j.id !== btn.dataset.delJournal);
-      saveJSON(STORAGE.journal, journal);
-      renderJournal();
-    }));
-  }
   function escapeHTML(str){return String(str).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 
   function initQuotes(){
